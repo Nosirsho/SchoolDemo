@@ -8,6 +8,7 @@ public interface IStudentStore
     public Task<IReadOnlyList<Student>> GetByFullname(string fullname);
     
     public Task<IReadOnlyList<Student>> GetAll();
+    public Task<IReadOnlyList<Student>> GetByGrade(Guid gradeId);
     public Task<Student> Update(Student student);
     Task Add(Student student); 
 }

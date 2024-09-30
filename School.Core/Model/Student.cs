@@ -2,6 +2,10 @@
 
 public class Student
 {
+    public Student()
+    {
+        
+    }
     public Student(string firstName, string lastName, string middleName, DateTime birthDate, Sex sex)
     {
         FirstName = firstName;

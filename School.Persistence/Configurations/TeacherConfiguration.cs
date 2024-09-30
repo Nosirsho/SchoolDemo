@@ -13,5 +13,11 @@ public class TeacherConfiguration : IEntityTypeConfiguration<Teacher>
         builder
             .HasOne(t => t.GradeLevel)
             .WithOne(g => g.Teacher);
+        
+        builder
+            .HasMany(t=>t.Schedules)
+            .WithOne(s => s.Teacher)
+            .HasForeignKey(s => s.TeacherId);
+        
     }
 }

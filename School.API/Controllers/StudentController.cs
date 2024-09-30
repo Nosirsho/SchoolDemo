@@ -52,6 +52,14 @@ public class StudentController : ControllerBase
         var students = await _studentService.GetAll();
         return Ok(students);
     }
+    
+    [HttpGet("/grade{gradeId:guid}")]
+    public async Task<ActionResult<IReadOnlyList<Student>>> GetByGrade(Guid gradeId)
+    {
+        _logger.LogInformation("Get all by grade");
+        var students = await _studentService.GetByGrade(gradeId);
+        return Ok(students);
+    }
 
     [HttpPost]
     public async Task<ActionResult<Student>> Create(CreateStudentRequest request)

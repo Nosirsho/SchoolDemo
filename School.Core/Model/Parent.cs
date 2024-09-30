@@ -2,6 +2,7 @@
 
 public class Parent
 {
+    public Parent(){}
     public Parent(Guid id, string firstName, string middleName, string lastName, 
         Sex sex, Guid studentId, string phone)
     {

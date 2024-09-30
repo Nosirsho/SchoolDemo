@@ -1,7 +1,6 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using School.API.Contracts.Teacher;
-using School.API.Validations.Teacher;
 using School.Application.Services;
 using School.Core.Model;
 

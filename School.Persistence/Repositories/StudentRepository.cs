@@ -35,6 +35,11 @@ public class StudentRepository : IStudentStore
         return await _schoolDbContext.Students.ToListAsync();
     }
 
+    public async Task<IReadOnlyList<Student>> GetByGrade(Guid gradeId)
+    {
+        return _schoolDbContext.Students.Where(s=>s.GradeLevelId == gradeId).ToList();
+    }
+
     public async Task<Student> Update(Student student)
     {
         var curStudent = await _schoolDbContext.Students.FindAsync(student.Id);

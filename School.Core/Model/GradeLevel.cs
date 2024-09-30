@@ -2,6 +2,7 @@
 
 public class GradeLevel
 {
+    public GradeLevel(){}
     public GradeLevel(Guid id, string name)
     {
         Id = id;
@@ -24,4 +25,5 @@ public class GradeLevel
     public DateTime? EntryYear { get; set; }
     public List<Student>? Students { get; set; }
     public Teacher? Teacher { get; set; }
+    public Schedule? Schedule { get; set; }
 }

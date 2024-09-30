@@ -7,6 +7,6 @@ public class CreateGradeLevelValidator : AbstractValidator<CreateGradeLevelReque
 {
     public CreateGradeLevelValidator()
     {
-        RuleFor(gl=>gl.Name).Length(2,3).NotEmpty();
+        RuleFor(l=>l.Name).Length(2,3).NotEmpty();
     }
 }

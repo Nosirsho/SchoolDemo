@@ -17,5 +17,8 @@ public class GradeLevelConfiguration : IEntityTypeConfiguration<GradeLevel>
         builder
             .HasOne(g => g.Teacher)
             .WithOne(t => t.GradeLevel);
+        builder
+            .HasOne(g => g.Schedule)
+            .WithOne(s => s.GradeLevel);
     }
 }

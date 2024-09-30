@@ -2,6 +2,10 @@
 
 public class Teacher
 {
+    public Teacher()
+    {
+        
+    }
     public Teacher(string firstName, string middleName, string lastName, string phone, DateTime birthDate, Sex sex)
     {
         Id = Guid.NewGuid();
@@ -35,4 +39,6 @@ public class Teacher
 
     public GradeLevel? GradeLevel { get; set; }
     public Guid? GradeLevelId { get; set; }
+
+    public IEnumerable<Schedule> Schedules { get; set; }
 }

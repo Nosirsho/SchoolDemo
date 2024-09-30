@@ -11,7 +11,8 @@ public class StudentConfiguration : IEntityTypeConfiguration<Student>
     {
         builder.HasKey(x => x.Id);
 
-        builder.HasMany(s => s.Parents)
+        builder
+            .HasMany(s => s.Parents)
             .WithOne(s => s.Student)
             .HasForeignKey(s => s.StudentId);
 

@@ -23,6 +23,8 @@ public class SchoolDbContext: DbContext
         modelBuilder.ApplyConfiguration(new ParentConfiguration());
         modelBuilder.ApplyConfiguration(new TeacherConfiguration());
         modelBuilder.ApplyConfiguration(new GradeLevelConfiguration());
+        modelBuilder.ApplyConfiguration(new LessonConfiguration());
+        modelBuilder.ApplyConfiguration(new ScheduleConfiguration());
         base.OnModelCreating(modelBuilder);
     }
 
@@ -30,4 +32,6 @@ public class SchoolDbContext: DbContext
     public DbSet<Parent> Parents => Set<Parent>();
     public DbSet<Teacher> Teachers => Set<Teacher>();
     public DbSet<GradeLevel> GradeLevels => Set<GradeLevel>();
+    public DbSet<Lesson> Lessons => Set<Lesson>();
+    public DbSet<Schedule> Schedules => Set<Schedule>();
 }

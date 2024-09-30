@@ -1,9 +1,6 @@
-﻿using System.Globalization;
-using FluentValidation;
+﻿using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using School.API.Contracts.GradeLevel;
-using School.API.Contracts.Teacher;
-using School.API.Validations.Teacher;
 using School.Application.Services;
 using School.Core.Model;
 
@@ -31,7 +28,7 @@ public class GradeLevelController : ControllerBase
     }
     
     [HttpGet]
-    public async Task<ActionResult<IReadOnlyList<Teacher>>> GetAll()
+    public async Task<ActionResult<IReadOnlyList<GradeLevel>>> GetAll()
     {
         var gradeLevels = await _gradeLevelService.GetAll();
         return Ok(gradeLevels);

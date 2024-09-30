@@ -46,4 +46,10 @@ public class StudentService
         var students = await _studentStore.GetAll();
         return students;
     }
+    
+    public async Task<IReadOnlyList<Student>> GetByGrade(Guid gradeId)
+    {
+        var students = await _studentStore.GetByGrade(gradeId);
+        return students;
+    }
 }
