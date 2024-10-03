@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using System.Collections.ObjectModel;
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using School.API.Contracts.Student;
 using School.Application.Services;
@@ -50,7 +51,15 @@ public class StudentController : ControllerBase
     {
         _logger.LogInformation("Get all students");
         var students = await _studentService.GetAll();
-        return Ok(students);
+        var result = students.Select(s =>
+            new GetStudentsListResponse(
+                s.Id, 
+                string.Join(" ", s.LastName, s.FirstName, s.MiddleName), 
+                DateOnly.FromDateTime(s.BirthDate), 
+                s.GradeLevel.Name,
+                s.Sex)
+        );
+        return Ok(result);
     }
     
     [HttpGet("/grade{gradeId:guid}")]

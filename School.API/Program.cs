@@ -18,6 +18,12 @@ try
     builder.Services.AddApplication();
 
     var app = builder.Build();
+    
+    app.UseCors(options => options
+        .AllowAnyOrigin()
+        .AllowAnyMethod()
+        .AllowAnyHeader());
+    
     using var scope = app.Services.CreateScope();
     await using var dbContext = scope.ServiceProvider.GetRequiredService<SchoolDbContext>();
     await dbContext.Database.EnsureCreatedAsync();

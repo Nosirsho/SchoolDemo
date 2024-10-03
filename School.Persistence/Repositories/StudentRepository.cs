@@ -32,7 +32,7 @@ public class StudentRepository : IStudentStore
     public async Task<IReadOnlyList<Student>> GetAll()
     {
         _logger.LogInformation("Get all students");
-        return await _schoolDbContext.Students.ToListAsync();
+        return await _schoolDbContext.Students.Include(s => s.GradeLevel).ToListAsync();
     }
 
     public async Task<IReadOnlyList<Student>> GetByGrade(Guid gradeId)
