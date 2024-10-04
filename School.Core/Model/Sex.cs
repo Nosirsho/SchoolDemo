@@ -1,6 +1,9 @@
-﻿namespace School.Core.Model;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace School.Core.Model;
 
 public enum Sex
 {
-    Man, Female
+    Man = 1,
+    Female
 }

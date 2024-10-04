@@ -35,7 +35,7 @@ public class Teacher
     public string? Phone { get; set; } = string.Empty;
     public DateTime BirthDate { get; set; }
     
-    public Sex Sex { get; set; } = Sex.Man;
+    public Sex Sex { get; set; }
 
     public GradeLevel? GradeLevel { get; set; }
     public Guid? GradeLevelId { get; set; }

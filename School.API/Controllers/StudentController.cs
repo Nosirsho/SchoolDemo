@@ -57,7 +57,8 @@ public class StudentController : ControllerBase
                 string.Join(" ", s.LastName, s.FirstName, s.MiddleName), 
                 DateOnly.FromDateTime(s.BirthDate), 
                 s.GradeLevel.Name,
-                s.Sex)
+                HelperService.GetSexFromDb(s.Sex)
+                )
         );
         return Ok(result);
     }

@@ -30,7 +30,7 @@ public class Parent
     public string FirstName { get; set; } = string.Empty;
     public string LastName { get; set; } = string.Empty;
     public string MiddleName { get; set; } = string.Empty;
-    public Sex Sex { get; set; } = Sex.Man;
+    public Sex Sex { get; set; }
     public string? Phone { get; set; } = string.Empty;
     public Student? Student { get; set; } = null;
     public Guid StudentId { get; set; }

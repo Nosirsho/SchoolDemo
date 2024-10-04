@@ -32,7 +32,15 @@ public class TeacherController : ControllerBase
     public async Task<ActionResult<IReadOnlyList<Teacher>>> GetAll()
     {
         var teachers = await _teacherService.GetAll();
-        return Ok(teachers);
+        var result = teachers.Select(t=> 
+            new GetTeachersListResponse(
+                t.Id, 
+                string.Join("", t.LastName, t.FirstName, t.MiddleName),
+                DateOnly.FromDateTime(t.BirthDate),
+                t.Phone,
+                HelperService.GetSexText(t.Sex)
+                ));
+        return Ok(result);
     }
     
     [HttpPost]
