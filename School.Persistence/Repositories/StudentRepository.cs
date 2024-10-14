@@ -55,6 +55,7 @@ public class StudentRepository : IStudentStore
 
     public async Task Add(Student student)
     {
+        student.BirthDate = student.BirthDate.ToUniversalTime();
         await _schoolDbContext.Students.AddAsync(student);
         await _schoolDbContext.SaveChangesAsync();
     }

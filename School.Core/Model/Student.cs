@@ -6,7 +6,7 @@ public class Student
     {
         
     }
-    public Student(string firstName, string lastName, string middleName, DateTime birthDate, Sex sex)
+    public Student(string firstName, string lastName, string middleName, DateTime birthDate, Sex sex, Guid gradeLevelId)
     {
         FirstName = firstName;
         LastName = lastName;
@@ -14,6 +14,7 @@ public class Student
         BirthDate = birthDate;
         Sex = sex;
         Id = Guid.NewGuid();
+        GradeLevelId = gradeLevelId;
     }
     public Student(Guid id, string firstName, string lastName, string middleName, DateTime birthDate, Sex sex)
     {
@@ -33,6 +34,7 @@ public class Student
     
     public Guid? GradeLevelId { get; set; }
     public GradeLevel? GradeLevel { get; set; }
+    
     public IEnumerable<Parent>? Parents { get; set; } = [];
     
 }

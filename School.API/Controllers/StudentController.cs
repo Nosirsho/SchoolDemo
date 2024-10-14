@@ -88,7 +88,8 @@ public class StudentController : ControllerBase
             request.LastName,
             request.MiddleName,
             request.BirthDate,
-            request.Sex
+            request.Sex,
+            request.GradeLevelId
             );
         await _studentService.Create(student);
         return Ok();
