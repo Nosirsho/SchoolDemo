@@ -16,6 +16,7 @@ try
     builder.Services.AddSwaggerGen();
     builder.Services.AddControllers();
     builder.Services.AddApplication();
+    builder.WebHost.UseUrls("http://localhost:5296");
 
     var app = builder.Build();
     
