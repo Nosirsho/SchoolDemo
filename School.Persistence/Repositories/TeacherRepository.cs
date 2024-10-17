@@ -26,12 +26,12 @@ public class TeacherRepository : ITeacherStore
     public async Task<Teacher> Update(Teacher teacher)
     {
         var curTeacher = await _schoolDbContext.Teachers.FindAsync(teacher.Id);
-        if (curTeacher != null) throw new NullReferenceException("Teacher not found");
+        if (curTeacher == null) throw new NullReferenceException("Teacher not found");
         
         curTeacher.FirstName = teacher.FirstName;
         curTeacher.MiddleName = teacher.MiddleName;
         curTeacher.LastName = teacher.LastName;
-        curTeacher.BirthDate = teacher.BirthDate;
+        curTeacher.BirthDate = teacher.BirthDate.ToUniversalTime();
         curTeacher.Phone = teacher.Phone;
         curTeacher.Sex = teacher.Sex;
         

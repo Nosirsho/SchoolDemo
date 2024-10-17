@@ -35,7 +35,7 @@ public class TeacherController : ControllerBase
         var result = teachers.Select(t=> 
             new GetTeachersListResponse(
                 t.Id, 
-                string.Join("", t.LastName, t.FirstName, t.MiddleName),
+                string.Join(" ", t.LastName, t.FirstName, t.MiddleName),
                 DateOnly.FromDateTime(t.BirthDate),
                 t.Phone,
                 HelperService.GetSexText(t.Sex)
@@ -59,7 +59,15 @@ public class TeacherController : ControllerBase
             request.Phone,
             request.BirthDate,request.Sex);
         await _teacherService.Create(teacher);
-        return Ok();
+        var result = new GetTeachersListResponse(
+            teacher.Id, 
+            string.Join(" ", teacher.LastName, teacher.FirstName, teacher.MiddleName),
+            DateOnly.FromDateTime(teacher.BirthDate),
+            teacher.Phone,
+            HelperService.GetSexText(teacher.Sex)
+            );
+        
+        return Ok(result);
     }
     
     [HttpPut("{id:guid}")]
@@ -81,7 +89,14 @@ public class TeacherController : ControllerBase
             request.Sex
         );
         var curParent = await _teacherService.Update(teacher);
-        return Ok(curParent);
+        var result = new GetTeachersListResponse(
+            curParent.Id, 
+            string.Join(" ", curParent.LastName, curParent.FirstName, curParent.MiddleName),
+            DateOnly.FromDateTime(curParent.BirthDate),
+            curParent.Phone,
+            HelperService.GetSexText(curParent.Sex)
+        );
+        return Ok(result);
     }
     
     
