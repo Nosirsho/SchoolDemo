@@ -47,7 +47,9 @@ public class StudentRepository : IStudentStore
         curStudent.FirstName = student.FirstName;
         curStudent.LastName = student.LastName;
         curStudent.MiddleName = student.MiddleName;
-        curStudent.BirthDate = student.BirthDate;
+        curStudent.BirthDate = student.BirthDate.ToUniversalTime();
+        curStudent.GradeLevelId = student.GradeLevelId;
+        curStudent.Sex = student.Sex;
 
         await _schoolDbContext.SaveChangesAsync();
         return curStudent;

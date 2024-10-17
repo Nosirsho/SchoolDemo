@@ -16,7 +16,7 @@ public class Student
         Id = Guid.NewGuid();
         GradeLevelId = gradeLevelId;
     }
-    public Student(Guid id, string firstName, string lastName, string middleName, DateTime birthDate, Sex sex)
+    public Student(Guid id, string firstName, string lastName, string middleName, DateTime birthDate, Sex sex, Guid? gradeLevelId)
     {
         FirstName = firstName;
         LastName = lastName;
@@ -24,6 +24,7 @@ public class Student
         BirthDate = birthDate;
         Sex = sex;
         Id = id;
+        GradeLevelId = gradeLevelId;
     }
     public Guid Id { get; set; }
     public string FirstName { get; set; }

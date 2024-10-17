@@ -13,19 +13,22 @@ namespace School.API.Controllers;
 public class StudentController : ControllerBase
 {
     private readonly StudentService _studentService;
+    private readonly GradeLevelService _gradeLevelService;
     private readonly IValidator<CreateStudentRequest> _createStudentValidator;
     private readonly IValidator<UpdateStudentRequest> _updateStudentValidator;
     private readonly ILogger<StudentController> _logger;
     private readonly SchoolDbContext _schoolDbContext;
 
     public StudentController(
-        StudentService studentService, 
+        StudentService studentService,
+        GradeLevelService gradeLevelService,
         IValidator<CreateStudentRequest> createStudentValidator,
         IValidator<UpdateStudentRequest> updateStudentValidator,
         ILogger<StudentController> logger,
         SchoolDbContext schoolDbContext)
     {
         _studentService = studentService;
+        _gradeLevelService = gradeLevelService;
         _createStudentValidator = createStudentValidator;
         _updateStudentValidator = updateStudentValidator;
         _logger = logger;
@@ -36,7 +39,16 @@ public class StudentController : ControllerBase
     public async Task<ActionResult<Student>> Get(Guid id)
     {
         var student = await _studentService.GetById(id);
-        return Ok(student);
+        var result = new GetStudentResponse(
+            student.Id,
+            student.FirstName,
+            student.LastName,
+            student.MiddleName,
+            DateOnly.FromDateTime(student.BirthDate),
+            student.GradeLevelId,
+            ((int)student.Sex).ToString()
+            );
+        return Ok(result);
     }
 
     [HttpGet("{fullname}")]
@@ -91,8 +103,17 @@ public class StudentController : ControllerBase
             request.Sex,
             request.GradeLevelId
             );
+        
         await _studentService.Create(student);
-        return Ok();
+        var studentGradeLevel = await _gradeLevelService.GetById(request.GradeLevelId);
+        var result = new GetStudentsListResponse(
+            student.Id,
+            string.Join(" ", student.LastName, student.FirstName, student.MiddleName), 
+            DateOnly.FromDateTime(student.BirthDate),
+            studentGradeLevel?.Name,
+            HelperService.GetSexFromDb(student.Sex)
+        );
+        return Ok(result);
     }
 
     [HttpPut("{id:guid}")]
@@ -112,10 +133,19 @@ public class StudentController : ControllerBase
             request.MiddleName,
             request.LastName,
             request.BirthDate,
-            request.Sex
+            request.Sex,
+            request.GradeLevelId
         );
         student = await _studentService.Update(student);
-        _logger.LogDebug("Update student, Response: " + student);
-        return Ok(student);
+        var studentGradeLevel = await _gradeLevelService.GetById(request.GradeLevelId);
+        var result = new GetStudentsListResponse(
+            student.Id,
+            string.Join(" ", student.LastName, student.FirstName, student.MiddleName), 
+            DateOnly.FromDateTime(student.BirthDate),
+            studentGradeLevel?.Name,
+            HelperService.GetSexFromDb(student.Sex)
+        );
+        _logger.LogDebug("Update student, Response: " + result);
+        return Ok(result);
     }
 }
