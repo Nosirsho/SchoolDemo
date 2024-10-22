@@ -34,6 +34,7 @@ public class Teacher
     public string LastName { get; set; } = string.Empty;
     public string? Phone { get; set; } = string.Empty;
     public DateTime BirthDate { get; set; }
+    public bool IsDeleted { get; set; }
     
     public Sex Sex { get; set; }
 

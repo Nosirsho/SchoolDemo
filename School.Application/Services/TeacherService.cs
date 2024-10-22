@@ -31,5 +31,18 @@ public class TeacherService
     {
         await _teacherStore.Add(teacher);
     }
-    
+
+    public async Task<Guid> Delete(Guid id)
+    {
+        return await _teacherStore.Delete(id); 
+    }
+
+    public async Task<IReadOnlyList<Teacher>> Search(string text)
+    {
+        var result = string.IsNullOrWhiteSpace(text) 
+            ? await _teacherStore.GetAll() 
+            : await _teacherStore.Search(text);
+        return result;
+    }
+
 }

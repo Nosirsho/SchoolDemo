@@ -43,6 +43,21 @@ public class TeacherController : ControllerBase
         return Ok(result);
     }
     
+    [HttpGet("search")]
+    public async Task<ActionResult<IReadOnlyList<Teacher>>> GetAll(string? search)
+    {
+        var teachers = await _teacherService.Search(search);
+        var result = teachers.Select(t=> 
+            new GetTeachersListResponse(
+                t.Id, 
+                string.Join(" ", t.LastName, t.FirstName, t.MiddleName),
+                DateOnly.FromDateTime(t.BirthDate),
+                t.Phone,
+                HelperService.GetSexText(t.Sex)
+            ));
+        return Ok(result);
+    }
+    
     [HttpPost]
     public async Task<ActionResult> Create(CreateTeacherRequest request)
     {
@@ -98,6 +113,13 @@ public class TeacherController : ControllerBase
         );
         return Ok(result);
     }
-    
-    
+
+    [HttpDelete("{id:guid}")]
+    public async Task<ActionResult> Delete(Guid id)
+    {
+        var result = await _teacherService.Delete(id);
+        return Ok(result);
+    }
+
+
 }
