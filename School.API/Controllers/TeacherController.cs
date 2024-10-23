@@ -44,7 +44,7 @@ public class TeacherController : ControllerBase
     }
     
     [HttpGet("search")]
-    public async Task<ActionResult<IReadOnlyList<Teacher>>> GetAll(string? search)
+    public async Task<ActionResult<IReadOnlyList<Teacher>>> Search(string? search)
     {
         var teachers = await _teacherService.Search(search);
         var result = teachers.Select(t=> 

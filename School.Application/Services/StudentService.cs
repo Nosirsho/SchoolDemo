@@ -52,4 +52,11 @@ public class StudentService
         var students = await _studentStore.GetByGrade(gradeId);
         return students;
     }
+    public async Task<IReadOnlyList<Student>> Search(string text)
+    {
+        var result = string.IsNullOrWhiteSpace(text) 
+            ? await _studentStore.GetAll() 
+            : await _studentStore.Search(text);
+        return result;
+    }
 }

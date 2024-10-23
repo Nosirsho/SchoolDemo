@@ -37,5 +37,6 @@ public class Student
     public GradeLevel? GradeLevel { get; set; }
     
     public IEnumerable<Parent>? Parents { get; set; } = [];
+    public bool IsDeleted { get; set; }
     
 }

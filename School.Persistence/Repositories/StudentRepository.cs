@@ -29,6 +29,14 @@ public class StudentRepository : IStudentStore
         return st;
     }
 
+    public async Task<IReadOnlyList<Student>> Search(string text)
+    {
+        var result = await _schoolDbContext.Students
+            .Where(x=> (x.LastName + " " + x.FirstName + " " + x.MiddleName).ToLower()
+                .Contains(text.ToLower()) && !x.IsDeleted).ToListAsync();
+        return result;
+    }
+
     public async Task<IReadOnlyList<Student>> GetAll()
     {
         _logger.LogInformation("Get all students");

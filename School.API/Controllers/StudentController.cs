@@ -75,6 +75,22 @@ public class StudentController : ControllerBase
         return Ok(result);
     }
     
+    [HttpGet("search")]
+    public async Task<ActionResult<IReadOnlyList<Teacher>>> Search(string? search)
+    {
+        var students = await _studentService.Search(search);
+        var result = students.Select(s =>
+            new GetStudentsListResponse(
+                s.Id, 
+                string.Join(" ", s.LastName, s.FirstName, s.MiddleName), 
+                DateOnly.FromDateTime(s.BirthDate), 
+                s.GradeLevel?.Name,
+                HelperService.GetSexFromDb(s.Sex)
+            )
+        );
+        return Ok(result);
+    }
+    
     [HttpGet("/grade{gradeId:guid}")]
     public async Task<ActionResult<IReadOnlyList<Student>>> GetByGrade(Guid gradeId)
     {
