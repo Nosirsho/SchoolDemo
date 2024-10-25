@@ -13,4 +13,5 @@ public interface IStudentStore
     public Task<IReadOnlyList<Student>> GetByGrade(Guid gradeId);
     public Task<Student> Update(Student student);
     Task Add(Student student); 
+    Task<Guid> Delete(Guid id);
 }

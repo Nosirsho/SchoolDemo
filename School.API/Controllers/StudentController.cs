@@ -164,4 +164,11 @@ public class StudentController : ControllerBase
         _logger.LogDebug("Update student, Response: " + result);
         return Ok(result);
     }
+    
+    [HttpDelete("{id:guid}")]
+    public async Task<ActionResult> Delete(Guid id)
+    {
+        var result = await _studentService.Delete(id);
+        return Ok(result);
+    }
 }

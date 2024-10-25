@@ -59,4 +59,8 @@ public class StudentService
             : await _studentStore.Search(text);
         return result;
     }
+    public async Task<Guid> Delete(Guid id)
+    {
+        return await _studentStore.Delete(id); 
+    }
 }
