@@ -18,9 +18,42 @@ public class ScheduleService
         return await _scheduleStore.GetById(scheduleId);
     }
 
-    public async Task<IReadOnlyList<Schedule>> GetAll()
+    public async Task<IReadOnlyList<GradeSchedule>> GetAll()
     {
-        return await _scheduleStore.GetAll();
+        var schedules = await _scheduleStore.GetAll();
+        var schedulesCollection = schedules
+            .GroupBy(s => s.GradeLevel)
+            .Select(g => new
+            {
+                Grade = g.Key,
+                Schedule = g.GroupBy(s => s.DayOfWeek)
+                    .Select(d => new
+                    {
+                        Day = d.Key,
+                        Lessons = d.Select(l => new
+                        {
+                            Number = l.Number,
+                            Name = l.Lesson,
+                        })
+                    })
+            })
+            .ToList();
+        List<GradeSchedule> gradeSchedules = [];
+        foreach (var scheduleItem in schedulesCollection)
+        {
+            List<DayLesson> dayLessons = [];
+            foreach (var schedule in scheduleItem.Schedule)
+            {
+                List<LessonNumber> lessonNumbers = [];
+                foreach (var lesson in schedule.Lessons)
+                {
+                    lessonNumbers.Add(new LessonNumber(lesson.Number, lesson.Name));
+                }
+                dayLessons.Add( new DayLesson( schedule.Day, lessonNumbers));
+            }
+            gradeSchedules.Add(new GradeSchedule(scheduleItem.Grade, dayLessons));
+        }
+        return gradeSchedules;
     }
 
     public async Task<Schedule> Update(Schedule schedule)

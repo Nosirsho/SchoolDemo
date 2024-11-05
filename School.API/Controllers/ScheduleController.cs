@@ -35,7 +35,7 @@ public class ScheduleController : ControllerBase
     }
     
     [HttpGet]
-    public async Task<ActionResult<IReadOnlyList<GradeLevel>>> GetAll()
+    public async Task<ActionResult<IReadOnlyList<GradeSchedule>>> GetAll()
     {
         return Ok(await _scheduleService.GetAll());
     }

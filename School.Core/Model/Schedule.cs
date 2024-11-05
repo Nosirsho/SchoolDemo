@@ -24,6 +24,7 @@ public class Schedule
     }
     public Guid Id { get; set; }
     public DayOfWeek DayOfWeek { get; set; }
+    public int Number { get; set; }
     public Lesson Lesson { get; set; }
     public Guid LessonId { get; set; }
     public Teacher Teacher { get; set; }

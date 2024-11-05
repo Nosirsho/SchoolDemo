@@ -18,9 +18,21 @@ public class ScheduleRepository : IScheduleStore
         return await _schoolDbContext.Schedules.FindAsync(id);
     }
 
-    public async Task<IReadOnlyList<Schedule>> GetAll()
+    public async Task<IReadOnlyList<ScheduleDto>> GetAll()
     {
-        return await _schoolDbContext.Schedules.ToListAsync();
+        var result = await _schoolDbContext.Schedules
+            .Select(s => new ScheduleDto
+            {
+                DayOfWeek = s.DayOfWeek,
+                GradeLevel = s.GradeLevel.Name,
+                Lesson = s.Lesson.Name,
+                Number = s.Number,
+            }).ToListAsync();
+            
+        
+        
+        
+        return result;
     }
 
     public async Task<Schedule> Update(Schedule schedule)
