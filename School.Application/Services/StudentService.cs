@@ -27,11 +27,12 @@ public class StudentService
         
         //Loginig
         //Validation
-        var existingStudent = await _studentStore.GetById(student.Id);
-        if (existingStudent != null)
-        {
-            throw new Exception($"Already existing student with id: {student.Id}");
-        }
+        //Проверить по ФИО или другой логике existingStudent
+        // var existingStudent = await _studentStore.GetById(student.Id);
+        // if (existingStudent != null)
+        // {
+        //     throw new Exception($"Already existing student with id: {student.Id}");
+        // }
         await _studentStore.Add(student);
     }
 

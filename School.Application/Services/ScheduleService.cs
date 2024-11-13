@@ -22,10 +22,11 @@ public class ScheduleService
     {
         var schedules = await _scheduleStore.GetAll();
         var schedulesCollection = schedules
-            .GroupBy(s => s.GradeLevel)
+            .GroupBy(s => new { s.GradeLevel, s.GradeLevelId})
             .Select(g => new
             {
-                Grade = g.Key,
+                Grade = g.Key.GradeLevel,
+                GradeLevelId = g.Key.GradeLevelId,
                 Schedule = g.GroupBy(s => s.DayOfWeek)
                     .Select(d => new
                     {
@@ -33,7 +34,7 @@ public class ScheduleService
                         Lessons = d.Select(l => new
                         {
                             Number = l.Number,
-                            Name = l.Lesson,
+                            Id = l.LessonId,
                         })
                     })
             })
@@ -47,11 +48,11 @@ public class ScheduleService
                 List<LessonNumber> lessonNumbers = [];
                 foreach (var lesson in schedule.Lessons)
                 {
-                    lessonNumbers.Add(new LessonNumber(lesson.Number, lesson.Name));
+                    lessonNumbers.Add(new LessonNumber(lesson.Number, lesson.Id));
                 }
-                dayLessons.Add( new DayLesson( schedule.Day, lessonNumbers));
+                dayLessons.Add( new DayLesson(schedule.Day, ServiceHelper.DayOfWeekToString(schedule.Day), lessonNumbers));
             }
-            gradeSchedules.Add(new GradeSchedule(scheduleItem.Grade, dayLessons));
+            gradeSchedules.Add(new GradeSchedule(scheduleItem.Grade, scheduleItem.GradeLevelId, dayLessons));
         }
         return gradeSchedules;
     }

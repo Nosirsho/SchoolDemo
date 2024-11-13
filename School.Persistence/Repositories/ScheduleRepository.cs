@@ -25,7 +25,8 @@ public class ScheduleRepository : IScheduleStore
             {
                 DayOfWeek = s.DayOfWeek,
                 GradeLevel = s.GradeLevel.Name,
-                Lesson = s.Lesson.Name,
+                GradeLevelId = s.GradeLevel.Id,
+                LessonId = s.Lesson.Id,
                 Number = s.Number,
             }).ToListAsync();
             

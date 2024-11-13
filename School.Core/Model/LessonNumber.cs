@@ -1,3 +1,3 @@
 namespace School.Core.Model;
 
-public record LessonNumber(int Number, string Title);
+public record LessonNumber(int Number, Guid LessonId);
