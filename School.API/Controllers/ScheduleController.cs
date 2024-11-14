@@ -1,4 +1,5 @@
 using FluentValidation;
+using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
 using School.API.Contracts.Schedule;
 using School.API.Validations;
@@ -14,17 +15,17 @@ public class ScheduleController : ControllerBase
 {
     private readonly ScheduleService _scheduleService;
     private readonly SchoolDbContext _schoolDbContext;
-    private readonly IValidator<CreateScheduleRequest> _createScheduleValidator;
+    private readonly IValidator<ScheduleRequest> _scheduleRequestValidator;
     private readonly IValidator<UpdateScheduleRequest> _updateScheduleValidator;
 
     public ScheduleController(ScheduleService scheduleService,
         SchoolDbContext schoolDbContext,
-        IValidator<CreateScheduleRequest> createScheduleValidator,
+        IValidator<ScheduleRequest> scheduleRequestValidator,
         IValidator<UpdateScheduleRequest> updateScheduleValidator)
     {
         _scheduleService = scheduleService;
         _schoolDbContext = schoolDbContext;
-        _createScheduleValidator = createScheduleValidator;
+        _scheduleRequestValidator = scheduleRequestValidator;
         _updateScheduleValidator = updateScheduleValidator;
     }
 
@@ -41,25 +42,44 @@ public class ScheduleController : ControllerBase
     }
     
     [HttpPost]
-    public async Task<ActionResult> Create(CreateScheduleRequest request)
+    public async Task<ActionResult> CreateUpdateSchedule(List<ScheduleRequest> request)
     {
-        var validationResult = await _createScheduleValidator.ValidateAsync(request);
-        var lesson = await _schoolDbContext.Lessons.FindAsync(request.LessonId);
-        var teacher = await _schoolDbContext.Teachers.FindAsync(request.TeacherId);
-        var gradelevel = await _schoolDbContext.GradeLevels.FindAsync(request.GradeLevelId);
-        if (!validationResult.IsValid || lesson is null || teacher is null || gradelevel is null)
+        var validationResults = new List<ValidationResult>();
+        foreach (var requestItem in request)
         {
-            return BadRequest(validationResult.Errors);
+            var result = await _scheduleRequestValidator.ValidateAsync(requestItem);
+            validationResults.Add(result);
         }
-        
-        var gradeLevel = new Schedule(
-            request.DayOfWeek,
-            lesson,
-            teacher,
-            gradelevel
-            );
-        await _scheduleService.Create(gradeLevel);
-        return Ok();
+
+        if (validationResults.Any(r => !r.IsValid))
+        {
+            return BadRequest(validationResults.SelectMany(r => r.Errors));
+        }
+        // var res = request.Select( s => new {
+        //     GradeLevelId = s.GradeLevelId, 
+        //     DayLessons = s.DayLessons.Select(
+        //     d => new 
+        //     {
+        //         dayInt = (DayOfWeek)d.DayInt,
+        //         LessonNumbers = d.LessonNumbers.Select(l => new 
+        //         {
+        //             Number = l.Number,
+        //             LessonId = l.LessonId
+        //         })
+        //     })}).ToList();
+        var schedules = request
+            .SelectMany(r => r.DayLessons.SelectMany(d => d.LessonNumbers.Select(l 
+                => new Schedule(
+                    r.GradeLevelId,
+                    (DayOfWeek)d.DayInt,
+                    l.LessonId,
+                    l.Number
+                )
+            ))).ToList();
+
+        //await _scheduleService.InsertOrUpdateSchedule(schedules);
+        await _scheduleService.AddScheduleCollection(schedules);
+        return  Ok();
     }
     
     [HttpPut("{id:guid}")]

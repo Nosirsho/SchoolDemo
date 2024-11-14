@@ -50,6 +50,7 @@ public static class DependencyInjection
         services.AddScoped<IValidator<UpdateLessonRequest>, UpdateLessonValidator>();
         services.AddScoped<IValidator<CreateScheduleRequest>, CreateScheduleValidator>();
         services.AddScoped<IValidator<UpdateScheduleRequest>, UpdateScheduleValidator>();
+        services.AddScoped<IValidator<ScheduleRequest>, ScheduleRequestValidator>();
        
         return services;
     }
