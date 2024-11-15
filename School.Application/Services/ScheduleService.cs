@@ -20,7 +20,7 @@ public class ScheduleService
         return await _scheduleStore.GetById(scheduleId);
     }
 
-    async Task<IReadOnlyList<ScheduleDto>> GetAll2()
+    async Task<IReadOnlyList<ScheduleDto>> GetScheduleForAllDay()
     {
         var gradeLevelCollection = await _gradeLevelStore.GetAll();
         var gradeScheduleCollection = new List<ScheduleDto>();
@@ -51,7 +51,7 @@ public class ScheduleService
 
     public async Task<IReadOnlyList<GradeSchedule>> GetAll()
     {
-        var schedules = await GetAll2();
+        var schedules = await GetScheduleForAllDay();
         var schedulesCollection = schedules
             .GroupBy(s => new { s.GradeLevel, s.GradeLevelId})
             .Select(g => new
@@ -73,6 +73,7 @@ public class ScheduleService
             })
             .OrderBy(s=>s.Grade)
             .ToList();
+        //преобразуем в иерарзический вид
         List<GradeSchedule> gradeSchedules = [];
         foreach (var scheduleItem in schedulesCollection)
         {
@@ -120,10 +121,6 @@ public class ScheduleService
 
     public async Task AddScheduleCollection(List<Schedule> schedules)
     {
-        await _scheduleStore.DeActivateAllSchedule();
-        foreach (var item in schedules)
-        {
-            await _scheduleStore.Add(item);
-        }
+        await _scheduleStore.AddAllSchedules(schedules);
     }
 }

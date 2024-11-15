@@ -28,6 +28,7 @@ public class ScheduleRepository : IScheduleStore
     {
         var result = await _schoolDbContext.Schedules
                 .Where(s => s.GradeLevelId == gradeLevelId && s.DayOfWeek == day && s.IsActive)
+                .OrderBy(s=>s.Number)
                 .Select(s => new ScheduleDto
                 {
                     DayOfWeek = s.DayOfWeek,
@@ -72,22 +73,53 @@ public class ScheduleRepository : IScheduleStore
     
     public async Task DeActivateAllSchedule()
     {
-        using (var transaction = await _schoolDbContext.Database.BeginTransactionAsync())
+        try
         {
-            var schedules = await _schoolDbContext.Schedules.Where(s=>s.IsActive).ToListAsync();
+            var schedules = await _schoolDbContext.Schedules.Where(s => s.IsActive).ToListAsync();
             foreach (var schedule in schedules)
             {
                 schedule.IsActive = false;
-                schedule.ModifiedOn = DateTime.Now;
+                schedule.ModifiedOn = DateTime.Now.ToUniversalTime();
             }
+
             await _schoolDbContext.SaveChangesAsync();
-            await transaction.CommitAsync();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+
+    public async Task AddAllSchedules(List<Schedule> schedules)
+    {
+        using (var transaction = await _schoolDbContext.Database.BeginTransactionAsync())
+        {
+            try
+            {
+                await DeActivateAllSchedule();
+                foreach (var item in schedules)
+                {
+                    item.IsActive = true;
+                    item.CreatedOn = DateTime.Now.ToUniversalTime();
+                    await _schoolDbContext.Schedules.AddAsync(item);
+                }
+                await _schoolDbContext.SaveChangesAsync();
+                await transaction.CommitAsync();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                await transaction.RollbackAsync();
+                throw new Exception($"Failed to save schedules: {e.Message}");
+            }
         }
     }
 
     public async Task Add(Schedule schedule)
     {
-        schedule.CreatedOn = DateTime.Now;
+        schedule.CreatedOn = DateTime.Now.ToUniversalTime();
+        schedule.IsActive = true;
         await _schoolDbContext.Schedules.AddAsync(schedule);
         await _schoolDbContext.SaveChangesAsync();
     }
