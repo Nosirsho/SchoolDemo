@@ -15,37 +15,19 @@ var logger = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentCla
 try
 {
     var builder = WebApplication.CreateBuilder(args);
+    var services = builder.Services;
+    var configuration = builder.Configuration;
+    services.AddApiAuthentication(configuration);
 
     //NLog: Установка логирования в DI
     builder.Logging.ClearProviders();
     builder.Host.UseNLog();
-    builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection(nameof(JwtOptions)));
+    services.Configure<JwtOptions>(builder.Configuration.GetSection(nameof(JwtOptions)));
     
-    builder.Services.AddEndpointsApiExplorer();
-    builder.Services.AddSwaggerGen();
-    builder.Services.AddControllers();
-    builder.Services.AddApplication();
-    builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-        .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
-        {
-            options.TokenValidationParameters = new()
-            {
-                ValidateIssuer = false,
-                ValidateAudience = false,
-                ValidateLifetime = true,
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetSection(nameof(SecurityKey)).Value))
-            };
-            options.Events = new JwtBearerEvents
-            {
-                OnMessageReceived = context =>
-                {
-                    context.Token = context.Request.Cookies["test_token"];
-                    return Task.CompletedTask;
-                }
-            };
-        });
-   
+    services.AddEndpointsApiExplorer();
+    services.AddSwaggerGen();
+    services.AddControllers();
+    services.AddApplication();
     
     builder.WebHost.UseUrls("http://localhost:5296");
 
