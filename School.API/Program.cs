@@ -1,6 +1,11 @@
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using NLog;
 using NLog.Web;
 using School.API;
+using School.API.Endpoints;
 using School.API.Extensions;
 using School.Infrastructure;
 using School.Persistence;
@@ -20,6 +25,27 @@ try
     builder.Services.AddSwaggerGen();
     builder.Services.AddControllers();
     builder.Services.AddApplication();
+    builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+        .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+        {
+            options.TokenValidationParameters = new()
+            {
+                ValidateIssuer = false,
+                ValidateAudience = false,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetSection(nameof(SecurityKey)).Value))
+            };
+            options.Events = new JwtBearerEvents
+            {
+                OnMessageReceived = context =>
+                {
+                    context.Token = context.Request.Cookies["test_token"];
+                    return Task.CompletedTask;
+                }
+            };
+        });
+   
     
     builder.WebHost.UseUrls("http://localhost:5296");
 
@@ -39,6 +65,8 @@ try
         app.UseSwagger();
         app.UseSwaggerUI();
     }
+    app.UseHttpsRedirection();
+    app.UseAuthorization();
 
     app.MapControllers();
     app.AddMappedExtensions();

@@ -12,7 +12,7 @@ public class SchoolDbContext: DbContext
     }
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        var connectionString = "Host=localhost;Port=5432;Database=school;Username=postgres;Password=postgres;";
+        var connectionString = "Host=localhost;Port=5433;Database=school;Username=postgres;Password=postgres;";
         optionsBuilder.UseNpgsql(connectionString);
         optionsBuilder.LogTo(System.Console.WriteLine);
     }

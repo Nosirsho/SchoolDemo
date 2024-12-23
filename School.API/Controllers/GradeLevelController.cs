@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using School.API.Contracts.GradeLevel;
 using School.Application.Services;
@@ -6,6 +7,7 @@ using School.Core.Model;
 
 namespace School.API.Controllers;
 [ApiController]
+[Authorize]
 [Route("[controller]")]
 public class GradeLevelController : ControllerBase
 {
