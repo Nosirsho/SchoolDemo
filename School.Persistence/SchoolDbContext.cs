@@ -12,7 +12,7 @@ public class SchoolDbContext: DbContext
     }
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        var connectionString = "Host=localhost;Port=5433;Database=school;Username=postgres;Password=postgres;";
+        var connectionString = "Host=localhost;Port=5432;Database=school;Username=postgres;Password=postgres;";
         optionsBuilder.UseNpgsql(connectionString);
         optionsBuilder.LogTo(System.Console.WriteLine);
     }
@@ -25,6 +25,7 @@ public class SchoolDbContext: DbContext
         modelBuilder.ApplyConfiguration(new GradeLevelConfiguration());
         modelBuilder.ApplyConfiguration(new LessonConfiguration());
         modelBuilder.ApplyConfiguration(new ScheduleConfiguration());
+        modelBuilder.ApplyConfiguration(new UserConfiguration());
         base.OnModelCreating(modelBuilder);
     }
 
@@ -34,4 +35,5 @@ public class SchoolDbContext: DbContext
     public DbSet<GradeLevel> GradeLevels => Set<GradeLevel>();
     public DbSet<Lesson> Lessons => Set<Lesson>();
     public DbSet<Schedule> Schedules => Set<Schedule>();
+    public DbSet<User> Users => Set<User>();
 }

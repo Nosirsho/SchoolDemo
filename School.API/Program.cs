@@ -1,6 +1,8 @@
 using NLog;
 using NLog.Web;
 using School.API;
+using School.API.Extensions;
+using School.Infrastructure;
 using School.Persistence;
 
 var logger = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
@@ -12,10 +14,13 @@ try
     //NLog: Установка логирования в DI
     builder.Logging.ClearProviders();
     builder.Host.UseNLog();
-
+    builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection(nameof(JwtOptions)));
+    
+    builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
     builder.Services.AddControllers();
     builder.Services.AddApplication();
+    
     builder.WebHost.UseUrls("http://localhost:5296");
 
     var app = builder.Build();
@@ -36,6 +41,7 @@ try
     }
 
     app.MapControllers();
+    app.AddMappedExtensions();
 
     app.Run();
 }

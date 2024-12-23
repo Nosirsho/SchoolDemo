@@ -11,9 +11,6 @@ namespace School.Persistence.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropIndex(
-                name: "IX_Schedules_GradeLevelId",
-                table: "Schedules");
-            migrationBuilder.DropIndex(
                 name: "IX_Schedules_LessonId",
                 table: "Schedules");
             migrationBuilder.DropIndex(

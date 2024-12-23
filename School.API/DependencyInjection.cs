@@ -11,8 +11,10 @@ using School.API.Validations.Lesson;
 using School.API.Validations.Parent;
 using School.API.Validations.Student;
 using School.API.Validations.Teacher;
+using School.Application.Interfaces.Auth;
 using School.Application.Services;
 using School.Core.Stores;
+using School.Infrastructure;
 using School.Persistence;
 using School.Persistence.Repositories;
 
@@ -30,6 +32,7 @@ public static class DependencyInjection
         services.AddScoped<GradeLevelService>();
         services.AddScoped<LessonService>();
         services.AddScoped<ScheduleService>();
+        services.AddScoped<UserService>();
         
         services.AddScoped<IStudentStore, StudentRepository>();
         services.AddScoped<IParentStore, ParentRepository>();
@@ -37,6 +40,9 @@ public static class DependencyInjection
         services.AddScoped<IGradeLevelStore, GradeLevelRepository>();
         services.AddScoped<ILessonStore, LessonRepository>();
         services.AddScoped<IScheduleStore, ScheduleRepository>();
+        services.AddScoped<IUserStore, UserRepository>();
+        services.AddScoped<IJwtProvider, JwtProvider>();
+        services.AddScoped<IPasswordHasher, PasswordHasher>();
         
         services.AddScoped<IValidator<CreateStudentRequest>, CreateStudentValidator>();
         services.AddScoped<IValidator<UpdateStudentRequest>, UpdateStudentValidator>();
