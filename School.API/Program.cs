@@ -1,7 +1,4 @@
-using System.Text;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
+using Microsoft.EntityFrameworkCore;
 using NLog;
 using NLog.Web;
 using School.API;
@@ -24,6 +21,11 @@ try
     builder.Host.UseNLog();
     services.Configure<JwtOptions>(builder.Configuration.GetSection(nameof(JwtOptions)));
     
+    services.AddDbContext<SchoolDbContext>(options =>
+    {
+        options.UseNpgsql(configuration.GetConnectionString(nameof(SchoolDbContext)));
+        options.LogTo(System.Console.WriteLine);
+    });
     services.AddEndpointsApiExplorer();
     services.AddSwaggerGen();
     services.AddControllers();
