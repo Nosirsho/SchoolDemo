@@ -12,27 +12,31 @@ var logger = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentCla
 try
 {
     var builder = WebApplication.CreateBuilder(args);
-    var services = builder.Services;
-    var configuration = builder.Configuration;
-    services.AddApiAuthentication(configuration);
-
+    
     //NLog: Установка логирования в DI
     builder.Logging.ClearProviders();
     builder.Host.UseNLog();
+    
+    builder.WebHost.UseUrls("http://localhost:5296");
+    
+    var services = builder.Services;
+    var configuration = builder.Configuration;
+    
+    services.AddApiAuthentication(configuration);
+    services.AddEndpointsApiExplorer();
+    services.AddSwaggerGen();
     services.Configure<JwtOptions>(builder.Configuration.GetSection(nameof(JwtOptions)));
+    services.Configure<AuthorizationOptions>(builder.Configuration.GetSection(nameof(AuthorizationOptions)));
+    services.AddPersistence(configuration);
+    services.AddApplication();
+
+    services.AddControllers();
     
     services.AddDbContext<SchoolDbContext>(options =>
     {
         options.UseNpgsql(configuration.GetConnectionString(nameof(SchoolDbContext)));
         options.LogTo(System.Console.WriteLine);
     });
-    services.AddEndpointsApiExplorer();
-    services.AddSwaggerGen();
-    services.AddControllers();
-    services.AddApplication();
-    
-    builder.WebHost.UseUrls("http://localhost:5296");
-
     var app = builder.Build();
     
     app.UseCors(options => options
@@ -40,9 +44,9 @@ try
         .AllowAnyMethod()
         .AllowAnyHeader());
     
-    using var scope = app.Services.CreateScope();
-    await using var dbContext = scope.ServiceProvider.GetRequiredService<SchoolDbContext>();
-    await dbContext.Database.EnsureCreatedAsync();
+    // using var scope = app.Services.CreateScope();
+    // await using var dbContext = scope.ServiceProvider.GetRequiredService<SchoolDbContext>();
+    // await dbContext.Database.EnsureCreatedAsync();
 
     if (app.Environment.IsDevelopment())
     {
@@ -50,11 +54,16 @@ try
         app.UseSwaggerUI();
     }
     app.UseHttpsRedirection();
+    
+    app.UseAuthorization();
     app.UseAuthorization();
 
     app.MapControllers();
     app.AddMappedExtensions();
-
+    app.MapGet("get", () =>
+    {
+        return Results.Ok("Hello World!");
+    }).RequireAuthorization("AdminPolicy");
     app.Run();
 }
 catch (Exception e)
