@@ -1,10 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using School.Core.Model;
 using School.Persistence.Configurations;
 
 namespace School.Persistence;
 
-public class SchoolDbContext(DbContextOptions<SchoolDbContext> options): DbContext(options)
+public class SchoolDbContext(DbContextOptions<SchoolDbContext> options, 
+    IOptions<AuthorizationOptions> authOptions): DbContext(options)
 {
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -15,6 +17,7 @@ public class SchoolDbContext(DbContextOptions<SchoolDbContext> options): DbConte
         modelBuilder.ApplyConfiguration(new LessonConfiguration());
         modelBuilder.ApplyConfiguration(new ScheduleConfiguration());
         modelBuilder.ApplyConfiguration(new UserConfiguration());
+        modelBuilder.ApplyConfiguration(new RolePermissionConffiguration(authOptions.Value));
         base.OnModelCreating(modelBuilder);
     }
 
