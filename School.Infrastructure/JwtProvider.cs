@@ -17,8 +17,7 @@ public class JwtProvider(IOptions<JwtOptions> options): IJwtProvider
             new SymmetricSecurityKey( Encoding.UTF8.GetBytes(_options.SecretKey)), 
             SecurityAlgorithms.HmacSha256 );
         Claim[] claims = [ 
-            new("userId", user.Id.ToString()),
-            new("Admin", "true"),
+            new("UserId", user.Id.ToString()),
         ];
         var token = new JwtSecurityToken(
             claims: claims,

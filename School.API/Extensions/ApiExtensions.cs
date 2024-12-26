@@ -1,9 +1,12 @@
 ﻿using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using School.API.Endpoints;
+using School.Core.Enums;
 using School.Infrastructure;
+using School.Infrastructure.Authentication;
 
 namespace School.API.Extensions;
 
@@ -50,8 +53,17 @@ public static class ApiExtensions
                 policy.RequireClaim("Student", "true");
             });
         });
-        
+        services.AddSingleton<IAuthorizationHandler, PermissionAuthorizationHendler>();
         services.AddAuthentication();
+    }
+    
+    public static IEndpointConventionBuilder RequirePermissions<TBuilder>(
+        this TBuilder builder, params Permission[] permissions)
+        where TBuilder : IEndpointConventionBuilder
+    {
+        return builder
+            .RequireAuthorization(pb =>
+                pb.AddRequirements(new PermissionRequirement(permissions)));
     }
     
 }

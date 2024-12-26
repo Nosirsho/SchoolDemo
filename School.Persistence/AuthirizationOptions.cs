@@ -2,7 +2,7 @@ namespace School.Persistence;
 
 public class AuthorizationOptions
 {
-    public RolePermissions[] RolePermissions { get; set; } = [];
+    public ICollection<RolePermissions> RolePermissions { get; set; } = [];
 }
 
 public class RolePermissions

@@ -4,7 +4,9 @@ using NLog.Web;
 using School.API;
 using School.API.Endpoints;
 using School.API.Extensions;
+using School.Core.Enums;
 using School.Infrastructure;
+using School.Infrastructure.Authentication;
 using School.Persistence;
 
 var logger = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
@@ -27,16 +29,17 @@ try
     services.AddSwaggerGen();
     services.Configure<JwtOptions>(builder.Configuration.GetSection(nameof(JwtOptions)));
     services.Configure<AuthorizationOptions>(builder.Configuration.GetSection(nameof(AuthorizationOptions)));
-    services.AddPersistence(configuration);
+    
+    //services.AddPersistence(configuration);
     services.AddApplication();
 
     services.AddControllers();
     
-    services.AddDbContext<SchoolDbContext>(options =>
-    {
-        options.UseNpgsql(configuration.GetConnectionString(nameof(SchoolDbContext)));
-        options.LogTo(System.Console.WriteLine);
-    });
+    // services.AddDbContext<SchoolDbContext>(options =>
+    // {
+    //     options.UseNpgsql(configuration.GetConnectionString(nameof(SchoolDbContext)));
+    //     options.LogTo(System.Console.WriteLine);
+    // });
     var app = builder.Build();
     
     app.UseCors(options => options
@@ -44,9 +47,9 @@ try
         .AllowAnyMethod()
         .AllowAnyHeader());
     
-    // using var scope = app.Services.CreateScope();
-    // await using var dbContext = scope.ServiceProvider.GetRequiredService<SchoolDbContext>();
-    // await dbContext.Database.EnsureCreatedAsync();
+    using var scope = app.Services.CreateScope();
+    await using var dbContext = scope.ServiceProvider.GetRequiredService<SchoolDbContext>();
+    await dbContext.Database.EnsureCreatedAsync();
 
     if (app.Environment.IsDevelopment())
     {
@@ -60,10 +63,10 @@ try
 
     app.MapControllers();
     app.AddMappedExtensions();
-    app.MapGet("get", () =>
-    {
-        return Results.Ok("Hello World!");
-    }).RequireAuthorization("AdminPolicy");
+    app.MapGet("get", () => Results.Ok("Hello World!")).RequirePermissions(Permission.Read);
+    app.MapPost("post", () => Results.Ok("Hello World!")).RequirePermissions(Permission.Create);
+    app.MapPut("put", () => Results.Ok("Hello World!")).RequirePermissions(Permission.Update);
+    app.MapDelete("delete", () => Results.Ok("Hello World!")).RequirePermissions(Permission.Delete);
     app.Run();
 }
 catch (Exception e)

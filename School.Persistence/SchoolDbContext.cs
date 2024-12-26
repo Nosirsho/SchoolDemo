@@ -1,13 +1,33 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using School.Core.Model;
 using School.Persistence.Configurations;
+using School.Persistence.Entities;
 
 namespace School.Persistence;
 
-public class SchoolDbContext(DbContextOptions<SchoolDbContext> options, 
-    IOptions<AuthorizationOptions> authOptions): DbContext(options)
+public class SchoolDbContext: DbContext
 {
+    private readonly IConfiguration _configuration;
+    private readonly AuthorizationOptions _authOptions;
+
+    public SchoolDbContext()
+    {
+        
+    }
+    public SchoolDbContext(IConfiguration configuration,
+        AuthorizationOptions authOptions)
+    {
+        _configuration = configuration;
+        _authOptions = authOptions;
+    }
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        optionsBuilder.UseNpgsql("Host=localhost;Port=5433;Database=school;Username=postgres;Password=postgres;");
+        optionsBuilder.LogTo(System.Console.WriteLine);
+    }
+    
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfiguration(new StudentConfiguration());
@@ -17,7 +37,9 @@ public class SchoolDbContext(DbContextOptions<SchoolDbContext> options,
         modelBuilder.ApplyConfiguration(new LessonConfiguration());
         modelBuilder.ApplyConfiguration(new ScheduleConfiguration());
         modelBuilder.ApplyConfiguration(new UserConfiguration());
-        modelBuilder.ApplyConfiguration(new RolePermissionConffiguration(authOptions.Value));
+        modelBuilder.ApplyConfiguration(new RoleConfiguration());
+        modelBuilder.ApplyConfiguration(new PermissionConfiguration());
+        modelBuilder.ApplyConfiguration(new RolePermissionConfiguration());
         base.OnModelCreating(modelBuilder);
     }
 
@@ -27,5 +49,6 @@ public class SchoolDbContext(DbContextOptions<SchoolDbContext> options,
     public DbSet<GradeLevel> GradeLevels => Set<GradeLevel>();
     public DbSet<Lesson> Lessons => Set<Lesson>();
     public DbSet<Schedule> Schedules => Set<Schedule>();
-    public DbSet<User> Users => Set<User>();
+    public DbSet<UserEntity> Users => Set<UserEntity>();
+    public DbSet<RoleEntity> Roles => Set<RoleEntity>();
 }
