@@ -2,19 +2,18 @@
 
 public class GradeLevel
 {
-    public GradeLevel(){}
-    public GradeLevel(Guid id, string name)
+    private GradeLevel(Guid id, string name)
     {
         Id = id;
         Name = name;
     }
-    public GradeLevel(string name)
+    private GradeLevel(string name)
     {
         Id = Guid.NewGuid();
         Name = name;
     }
     
-    public GradeLevel(Guid id,string name, DateTime date)
+    private GradeLevel(Guid id,string name, DateTime date)
     {
         Id = id;
         Name = name;
@@ -26,4 +25,17 @@ public class GradeLevel
     public List<Student>? Students { get; set; }
     public Teacher? Teacher { get; set; }
     public Schedule? Schedule { get; set; }
+
+    public static GradeLevel Create(string name)
+    {
+        return new GradeLevel(name);
+    }
+    public static GradeLevel Create(Guid id, string name)
+    {
+        return new GradeLevel(id,name);
+    }
+    public static GradeLevel Create(Guid id,string name, DateTime date)
+    {
+        return new GradeLevel(id, name, date);
+    }
 }

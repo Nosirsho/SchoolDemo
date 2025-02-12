@@ -1,12 +1,12 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using School.Core.Model;
+using School.Persistence.Entities;
 
 namespace School.Persistence.Configurations;
 
-public class ScheduleConfiguration : IEntityTypeConfiguration<Schedule>
+public class ScheduleConfiguration : IEntityTypeConfiguration<ScheduleEntity>
 {
-    public void Configure(EntityTypeBuilder<Schedule> builder)
+    public void Configure(EntityTypeBuilder<ScheduleEntity> builder)
     {
         builder.HasKey(x => x.Id);
 

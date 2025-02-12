@@ -1,12 +1,10 @@
-﻿namespace School.Core.Model;
+﻿using School.Core.Enums;
+
+namespace School.Core.Model;
 
 public class Student
 {
-    public Student()
-    {
-        
-    }
-    public Student(string firstName, string lastName, string middleName, DateTime birthDate, Sex sex, Guid gradeLevelId)
+    private Student(string firstName, string lastName, string middleName, DateTime birthDate, Sex sex, Guid gradeLevelId)
     {
         FirstName = firstName;
         LastName = lastName;
@@ -16,7 +14,7 @@ public class Student
         Id = Guid.NewGuid();
         GradeLevelId = gradeLevelId;
     }
-    public Student(Guid id, string firstName, string lastName, string middleName, DateTime birthDate, Sex sex, Guid? gradeLevelId)
+    private Student(Guid id, string firstName, string lastName, string middleName, DateTime birthDate, Sex sex, Guid? gradeLevelId)
     {
         FirstName = firstName;
         LastName = lastName;
@@ -38,5 +36,14 @@ public class Student
     
     public IEnumerable<Parent>? Parents { get; set; } = [];
     public bool IsDeleted { get; set; }
+
+    public static Student Create(string firstName, string lastName, string middleName, DateTime birthDate, Sex sex, Guid gradeLevelId)
+    {
+        return new Student(firstName, lastName, middleName, birthDate, sex, gradeLevelId);
+    }
     
+    public static Student Create(Guid id, string firstName, string lastName, string middleName, DateTime birthDate, Sex sex, Guid? gradeLevelId)
+    {
+        return new Student(id, firstName, lastName, middleName, birthDate, sex, gradeLevelId);
+    }
 }

@@ -1,4 +1,4 @@
-﻿using School.Core.Model;
+﻿using School.Core.Enums;
 
 namespace School.API.Contracts.Student;
 

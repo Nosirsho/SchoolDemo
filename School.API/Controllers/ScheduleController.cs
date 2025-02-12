@@ -52,7 +52,7 @@ public class ScheduleController : ControllerBase
             return BadRequest(validationResult.Errors);
         }
         
-        var gradeLevel = new Schedule(
+        var gradeLevel = Schedule.Create(
             request.DayOfWeek,
             lesson,
             teacher,

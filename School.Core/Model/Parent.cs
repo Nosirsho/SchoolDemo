@@ -1,9 +1,10 @@
-﻿namespace School.Core.Model;
+﻿using School.Core.Enums;
+
+namespace School.Core.Model;
 
 public class Parent
 {
-    public Parent(){}
-    public Parent(Guid id, string firstName, string middleName, string lastName, 
+    private Parent(Guid id, string firstName, string middleName, string lastName, 
         Sex sex, Guid studentId, string phone)
     {
         Id = id;
@@ -15,7 +16,7 @@ public class Parent
         Phone = phone;
     }
     
-    public Parent(string firstName, string middleName, string lastName, 
+    private Parent(string firstName, string middleName, string lastName, 
         Sex sex, Guid studentId, string phone)
     {
         Id = Guid.NewGuid();
@@ -34,4 +35,16 @@ public class Parent
     public string? Phone { get; set; } = string.Empty;
     public Student? Student { get; set; } = null;
     public Guid StudentId { get; set; }
+
+    public static Parent Create(Guid id, string firstName, string middleName, string lastName, 
+        Sex sex, Guid studentId, string phone)
+    {
+        return new Parent(id, firstName, middleName, lastName, sex, studentId, phone);
+    }
+
+    public static Parent Create(string firstName, string middleName, string lastName, 
+        Sex sex, Guid studentId, string phone)
+    {
+        return new Parent(firstName, middleName, lastName, sex, studentId, phone);
+    }
 }

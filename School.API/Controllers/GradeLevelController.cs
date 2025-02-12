@@ -45,7 +45,7 @@ public class GradeLevelController : ControllerBase
             return BadRequest(validationResult.Errors);
         }
 
-        var gradeLevel = new GradeLevel(
+        var gradeLevel = GradeLevel.Create(
                 request.Name
             );
         await _gradeLevelService.Create(gradeLevel);
@@ -61,7 +61,7 @@ public class GradeLevelController : ControllerBase
             return BadRequest(validationResult.Errors);
         }
         
-        var gradeLevel = new GradeLevel(
+        var gradeLevel = GradeLevel.Create(
             request.Id,
             request.Name,
             request.EntryDate

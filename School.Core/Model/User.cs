@@ -1,6 +1,4 @@
-﻿using System.Dynamic;
-
-namespace School.Core.Model;
+﻿namespace School.Core.Model;
 
 public class User
 {

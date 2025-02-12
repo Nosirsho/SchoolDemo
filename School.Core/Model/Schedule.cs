@@ -2,11 +2,12 @@ namespace School.Core.Model;
 
 public class Schedule
 {
+    //при удалении пустого конструктора программа не запкскается
     public Schedule()
     {
         
     }
-    public Schedule(DayOfWeek dayOfWeek, Lesson lesson, Teacher teacher, GradeLevel gradeLevel)
+    private Schedule(DayOfWeek dayOfWeek, Lesson lesson, Teacher teacher, GradeLevel gradeLevel)
     {
         Id = Guid.NewGuid();
         DayOfWeek = dayOfWeek;
@@ -31,4 +32,13 @@ public class Schedule
     public Guid TeacherId { get; set; }
     public GradeLevel GradeLevel { get; set; }
     public Guid GradeLevelId { get; set; }
+
+    public static Schedule Create(DayOfWeek dayOfWeek, Lesson lesson, Teacher teacher, GradeLevel gradeLevel)
+    {
+        return new Schedule(dayOfWeek, lesson, teacher, gradeLevel);
+    }
+    public static Schedule Create(Guid id, DayOfWeek dayOfWeek, Lesson lesson, Teacher teacher, GradeLevel gradeLevel)
+    {
+        return new Schedule(id, dayOfWeek, lesson, teacher, gradeLevel);
+    }
 }

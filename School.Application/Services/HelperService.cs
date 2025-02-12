@@ -1,3 +1,4 @@
+using School.Core.Enums;
 using School.Core.Model;
 
 namespace School.Application.Services;

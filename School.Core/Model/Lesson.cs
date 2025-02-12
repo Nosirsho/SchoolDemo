@@ -2,13 +2,12 @@ namespace School.Core.Model;
 
 public class Lesson
 {
-    public Lesson(){}
-    public Lesson(string name)
+    private Lesson(string name)
     {
         Id = Guid.NewGuid();
         Name = name;
     }
-    public Lesson(Guid id, string name)
+    private Lesson(Guid id, string name)
     {
         Id = id;
         Name = name;
@@ -16,4 +15,13 @@ public class Lesson
     public Guid Id { get; set; }
     public string Name { get; set; }
     public Schedule? Schedule { get; set; }
+
+    public static Lesson Create(string name)
+    {
+        return new Lesson(name);
+    }
+    public static Lesson Create(Guid id, string name)
+    {
+        return new Lesson(id, name);
+    }
 }

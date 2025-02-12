@@ -1,12 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using School.Core.Model;
+using School.Persistence.Entities;
 
 namespace School.Persistence.Configurations;
 
-public class TeacherConfiguration : IEntityTypeConfiguration<Teacher>
+public class TeacherConfiguration : IEntityTypeConfiguration<TeacherEntity>
 {
-    public void Configure(EntityTypeBuilder<Teacher> builder)
+    public void Configure(EntityTypeBuilder<TeacherEntity> builder)
     {
         builder.HasKey(x => x.Id);
 

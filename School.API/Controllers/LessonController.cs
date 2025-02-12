@@ -44,7 +44,7 @@ public class LessonController : ControllerBase
             return BadRequest(validationResult.Errors);
         }
 
-        var lesson = new Lesson(
+        var lesson = Lesson.Create(
             request.Name
         );
         await _lessonService.Create(lesson);
@@ -60,7 +60,7 @@ public class LessonController : ControllerBase
             return BadRequest(validationResult.Errors);
         }
         
-        var lesson = new Lesson(
+        var lesson = Lesson.Create(
             request.Id,
             request.Name
         );

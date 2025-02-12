@@ -1,11 +1,9 @@
-﻿namespace School.Core.Model;
+﻿using School.Core.Enums;
+
+namespace School.Core.Model;
 
 public class Teacher
 {
-    public Teacher()
-    {
-        
-    }
     public Teacher(string firstName, string middleName, string lastName, string phone, DateTime birthDate, Sex sex)
     {
         Id = Guid.NewGuid();

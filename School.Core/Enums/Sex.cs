@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace School.Core.Model;
+namespace School.Core.Enums;
 
 public enum Sex
 {

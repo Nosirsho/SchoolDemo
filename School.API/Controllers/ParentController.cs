@@ -43,7 +43,7 @@ public class ParentController : ControllerBase
             return BadRequest(validatorResult.Errors);
         }
 
-        var parent = new Parent(
+        var parent = Parent.Create(
             request.FirstName, 
             request.MiddleName, 
             request.LastName, 
@@ -63,7 +63,7 @@ public class ParentController : ControllerBase
             return BadRequest(validatorResult.Errors);
         }
 
-        var parent = new Parent(
+        var parent = Parent.Create(
             request.Id,
             request.FirstName, 
             request.MiddleName, 

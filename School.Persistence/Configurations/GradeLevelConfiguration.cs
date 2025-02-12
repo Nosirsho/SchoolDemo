@@ -1,12 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using School.Core.Model;
+using School.Persistence.Entities;
 
 namespace School.Persistence.Configurations;
 
-public class GradeLevelConfiguration : IEntityTypeConfiguration<GradeLevel>
+public class GradeLevelConfiguration : IEntityTypeConfiguration<GradeLevelEntity>
 {
-    public void Configure(EntityTypeBuilder<GradeLevel> builder)
+    public void Configure(EntityTypeBuilder<GradeLevelEntity> builder)
     {
         builder.HasKey(x => x.Id);
 

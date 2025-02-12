@@ -111,7 +111,7 @@ public class StudentController : ControllerBase
             return BadRequest(validateResult.Errors);
         }
         
-        var student = new Student(
+        var student = Student.Create(
             request.FirstName,
             request.LastName,
             request.MiddleName,
@@ -143,7 +143,7 @@ public class StudentController : ControllerBase
             return BadRequest(validateResult.Errors);
         }
 
-        var student = new Student(
+        var student = Student.Create(
             request.Id,
             request.FirstName,
             request.MiddleName,
