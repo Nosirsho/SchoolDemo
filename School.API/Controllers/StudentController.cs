@@ -39,6 +39,11 @@ public class StudentController : ControllerBase
     public async Task<ActionResult<Student>> Get(Guid id)
     {
         var student = await _studentService.GetById(id);
+        if (student==null)
+        {
+            return NotFound(new ApiResponse<object>(0, "Student not found"));
+        }
+    
         var result = new GetStudentResponse(
             student.Id,
             student.FirstName,
@@ -47,8 +52,8 @@ public class StudentController : ControllerBase
             DateOnly.FromDateTime(student.BirthDate),
             student.GradeLevelId,
             ((int)student.Sex).ToString()
-            );
-        return Ok(result);
+        );
+        return Ok( new ApiResponse<GetStudentResponse>(result));
     }
 
     [HttpGet("{fullname}")]
@@ -72,7 +77,7 @@ public class StudentController : ControllerBase
                 HelperService.GetSexFromDb(s.Sex)
                 )
         );
-        return Ok(result);
+        return Ok(new ApiResponse<IEnumerable<GetStudentsListResponse>>(result) );
     }
     
     [HttpGet("search")]
@@ -88,7 +93,7 @@ public class StudentController : ControllerBase
                 HelperService.GetSexFromDb(s.Sex)
             )
         );
-        return Ok(result);
+        return Ok(new ApiResponse<IEnumerable<GetStudentsListResponse>>(result));
     }
     
     [HttpGet("/grade{gradeId:guid}")]
@@ -96,7 +101,7 @@ public class StudentController : ControllerBase
     {
         _logger.LogInformation("Get all by grade");
         var students = await _studentService.GetByGrade(gradeId);
-        return Ok(students);
+        return Ok(new ApiResponse<IReadOnlyList<Student>>(students));
     }
 
     [HttpPost]
@@ -107,8 +112,9 @@ public class StudentController : ControllerBase
         var validateResult = await _createStudentValidator.ValidateAsync(request);
         if (!validateResult.IsValid)
         {
+            string errors = validateResult.Errors.Select(e => e.ErrorMessage).ToString();
             _logger.LogInformation("ValidationError");
-            return BadRequest(validateResult.Errors);
+            return Ok(new ApiResponse<object>(0, errors));
         }
         
         var student = Student.Create(
@@ -129,7 +135,7 @@ public class StudentController : ControllerBase
             studentGradeLevel?.Name,
             HelperService.GetSexFromDb(student.Sex)
         );
-        return Ok(result);
+        return Ok(new ApiResponse<GetStudentsListResponse>(result));
     }
 
     [HttpPut("{id:guid}")]
@@ -140,7 +146,8 @@ public class StudentController : ControllerBase
         if (!validateResult.IsValid)
         {
             _logger.LogInformation("ValidationError");
-            return BadRequest(validateResult.Errors);
+            string erroroMsg = validateResult.Errors.Select(e=>e.ErrorMessage).ToString();
+            return BadRequest(new ApiResponse<object>(1, erroroMsg));
         }
 
         var student = Student.Create(
@@ -162,13 +169,13 @@ public class StudentController : ControllerBase
             HelperService.GetSexFromDb(student.Sex)
         );
         _logger.LogDebug("Update student, Response: " + result);
-        return Ok(result);
+        return Ok(new ApiResponse<GetStudentsListResponse>(result));
     }
     
     [HttpDelete("{id:guid}")]
     public async Task<ActionResult> Delete(Guid id)
     {
         var result = await _studentService.Delete(id);
-        return Ok(result);
+        return Ok(new ApiResponse<Guid>(result));
     }
 }

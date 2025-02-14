@@ -7,7 +7,7 @@ using School.Core.Model;
 
 namespace School.API.Controllers;
 [ApiController]
-[Authorize]
+//[Authorize]
 [Route("[controller]")]
 public class GradeLevelController : ControllerBase
 {
@@ -26,14 +26,19 @@ public class GradeLevelController : ControllerBase
     public async Task<ActionResult<GradeLevel>> Get(Guid id)
     {
         var gradeLevel = await _gradeLevelService.GetById(id);
-        return Ok(gradeLevel);
+        if (gradeLevel == null)
+        {
+            return NotFound(new ApiResponse<object>(0, "Grade Level not found"));
+        }
+
+        return Ok( new ApiResponse<GradeLevel>(gradeLevel));
     }
     
     [HttpGet]
     public async Task<ActionResult<IReadOnlyList<GradeLevel>>> GetAll()
     {
         var gradeLevels = await _gradeLevelService.GetAll();
-        return Ok(gradeLevels);
+        return Ok(new ApiResponse<IReadOnlyList<GradeLevel>>(gradeLevels));
     }
     
     [HttpPost]
@@ -42,14 +47,15 @@ public class GradeLevelController : ControllerBase
         var validationResult = await _createGradeLevelValidator.ValidateAsync(request);
         if (!validationResult.IsValid)
         {
-            return BadRequest(validationResult.Errors);
+            string? errors = validationResult.Errors.Select(e => e.ErrorMessage).ToString();
+            return BadRequest( new ApiResponse<object>(0, errors));
         }
 
         var gradeLevel = GradeLevel.Create(
                 request.Name
             );
         await _gradeLevelService.Create(gradeLevel);
-        return Ok();
+        return Ok( new ApiResponse<GradeLevel>(gradeLevel));
     }
     
     [HttpPut("{id:guid}")]
