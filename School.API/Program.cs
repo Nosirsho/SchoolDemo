@@ -1,13 +1,11 @@
-using Microsoft.EntityFrameworkCore;
 using NLog;
 using NLog.Web;
 using School.API;
-using School.API.Endpoints;
 using School.API.Extensions;
 using School.Core.Enums;
 using School.Infrastructure;
-using School.Infrastructure.Authentication;
 using School.Persistence;
+using School.Persistence.Mappings;
 
 var logger = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
 
@@ -29,7 +27,7 @@ try
     services.AddSwaggerGen();
     services.Configure<JwtOptions>(builder.Configuration.GetSection(nameof(JwtOptions)));
     services.Configure<AuthorizationOptions>(builder.Configuration.GetSection(nameof(AuthorizationOptions)));
-    
+    services.AddAutoMapper(typeof(DataBaseMappings));
     //services.AddPersistence(configuration);
     services.AddApplication();
 
@@ -40,6 +38,7 @@ try
     //     options.UseNpgsql(configuration.GetConnectionString(nameof(SchoolDbContext)));
     //     options.LogTo(System.Console.WriteLine);
     // });
+    
     var app = builder.Build();
     
     app.UseCors(options => options

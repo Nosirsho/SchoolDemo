@@ -1,3 +1,4 @@
+using AutoMapper;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using School.API.Contracts.Schedule;
@@ -5,6 +6,7 @@ using School.API.Validations;
 using School.Application.Services;
 using School.Core.Model;
 using School.Persistence;
+using Lesson = School.Core.Model.Lesson;
 
 namespace School.API.Controllers;
 
@@ -16,16 +18,20 @@ public class ScheduleController : ControllerBase
     private readonly SchoolDbContext _schoolDbContext;
     private readonly IValidator<CreateScheduleRequest> _createScheduleValidator;
     private readonly IValidator<UpdateScheduleRequest> _updateScheduleValidator;
+    private readonly IMapper _mapper;
 
     public ScheduleController(ScheduleService scheduleService,
         SchoolDbContext schoolDbContext,
         IValidator<CreateScheduleRequest> createScheduleValidator,
-        IValidator<UpdateScheduleRequest> updateScheduleValidator)
+        IValidator<UpdateScheduleRequest> updateScheduleValidator,
+        IMapper mapper)
+        
     {
         _scheduleService = scheduleService;
         _schoolDbContext = schoolDbContext;
         _createScheduleValidator = createScheduleValidator;
         _updateScheduleValidator = updateScheduleValidator;
+        _mapper = mapper;
     }
 
     [HttpGet("{id:guid}")]
@@ -44,21 +50,21 @@ public class ScheduleController : ControllerBase
     public async Task<ActionResult> Create(CreateScheduleRequest request)
     {
         var validationResult = await _createScheduleValidator.ValidateAsync(request);
-        var lesson = await _schoolDbContext.Lessons.FindAsync(request.LessonId);
-        var teacher = await _schoolDbContext.Teachers.FindAsync(request.TeacherId);
-        var gradelevel = await _schoolDbContext.GradeLevels.FindAsync(request.GradeLevelId);
-        if (!validationResult.IsValid || lesson is null || teacher is null || gradelevel is null)
+        var lesson = _mapper.Map<Lesson>(await _schoolDbContext.Lessons.FindAsync(request.LessonId));
+        var teacher =_mapper.Map<Teacher>(await _schoolDbContext.Teachers.FindAsync(request.TeacherId));
+        var gradeLevel = _mapper.Map<GradeLevel>(await _schoolDbContext.GradeLevels.FindAsync(request.GradeLevelId));
+        if (!validationResult.IsValid || lesson is null || teacher is null || gradeLevel is null)
         {
             return BadRequest(validationResult.Errors);
         }
         
-        var gradeLevel = Schedule.Create(
+        var schedule = Schedule.Create(
             request.DayOfWeek,
             lesson,
             teacher,
-            gradelevel
+            gradeLevel
             );
-        await _scheduleService.Create(gradeLevel);
+        await _scheduleService.Create(schedule);
         return Ok();
     }
     
@@ -66,9 +72,9 @@ public class ScheduleController : ControllerBase
     public async Task<ActionResult<GradeLevel>> Update(Guid id, UpdateScheduleRequest request)
     {
         var validationResult = await _updateScheduleValidator.ValidateAsync(request);
-        var lesson = await _schoolDbContext.Lessons.FindAsync(request.LessonId);
-        var teacher = await _schoolDbContext.Teachers.FindAsync(request.TeacherId);
-        var gradeLevel = await _schoolDbContext.GradeLevels.FindAsync(request.GradeLevelId);
+        var lesson = _mapper.Map<Lesson>(await _schoolDbContext.Lessons.FindAsync(request.LessonId));
+        var teacher =_mapper.Map<Teacher>(await _schoolDbContext.Teachers.FindAsync(request.TeacherId));
+        var gradeLevel = _mapper.Map<GradeLevel>(await _schoolDbContext.GradeLevels.FindAsync(request.GradeLevelId));
         if (!validationResult.IsValid || id == Guid.Empty || request.Id != id 
             || lesson is null || teacher is null || gradeLevel is null)
         {

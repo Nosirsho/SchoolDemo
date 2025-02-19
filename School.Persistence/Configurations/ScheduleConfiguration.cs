@@ -9,6 +9,7 @@ public class ScheduleConfiguration : IEntityTypeConfiguration<ScheduleEntity>
     public void Configure(EntityTypeBuilder<ScheduleEntity> builder)
     {
         builder.HasKey(x => x.Id);
+        builder.ToTable("Schedules");
 
         builder
             .HasOne(s => s.Teacher)

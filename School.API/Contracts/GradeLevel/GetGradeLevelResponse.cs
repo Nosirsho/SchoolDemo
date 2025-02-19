@@ -1,6 +1,3 @@
 namespace School.API.Contracts.GradeLevel;
 
-public class GetGradeLevelResponse
-{
-    
-}
+public record GetGradeLevelResponse(Guid Id, string Name);

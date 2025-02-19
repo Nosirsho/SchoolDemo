@@ -1,28 +1,33 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using School.Core.Model;
 using School.Core.Stores;
+using School.Persistence.Entities;
 
 namespace School.Persistence.Repositories;
 
 public class TeacherRepository : ITeacherStore
 {
     private readonly SchoolDbContext _schoolDbContext;
+    private readonly IMapper _mapper;
 
-    public TeacherRepository(SchoolDbContext schoolDbContext)
+    public TeacherRepository(SchoolDbContext schoolDbContext, IMapper mapper)
     {
         _schoolDbContext = schoolDbContext;
+        _mapper = mapper;
     }
     
     public async Task<Teacher> GetById(Guid id)
     {
         var teacher = await _schoolDbContext.Teachers.FirstOrDefaultAsync(t => t.Id == id && !t.IsDeleted);
         if (teacher == null) throw new NullReferenceException($"Teacher not found with id {id}");
-        return teacher;
+        return _mapper.Map<Teacher>(teacher);
     }
 
     public async Task<IReadOnlyList<Teacher>> GetAll()
     {
-        return await _schoolDbContext.Teachers.Where(t=>!t.IsDeleted).ToListAsync();
+        var result = await _schoolDbContext.Teachers.Where(t=>!t.IsDeleted).ToListAsync(); 
+        return _mapper.Map<IReadOnlyList<Teacher>>(result);
     }
 
     public async Task<Teacher> Update(Teacher teacher)
@@ -42,8 +47,9 @@ public class TeacherRepository : ITeacherStore
 
     public async Task Add(Teacher teacher)
     {
-        teacher.BirthDate = teacher.BirthDate.ToUniversalTime();
-        await _schoolDbContext.Teachers.AddAsync(teacher);
+        var teacerEntity = _mapper.Map<TeacherEntity>(teacher);
+        teacerEntity.BirthDate = teacerEntity.BirthDate.ToUniversalTime();
+        await _schoolDbContext.Teachers.AddAsync(teacerEntity);
         await _schoolDbContext.SaveChangesAsync();
     }
 
@@ -60,6 +66,6 @@ public class TeacherRepository : ITeacherStore
         var result = await _schoolDbContext.Teachers
             .Where(x=> (x.LastName + " " + x.FirstName + " " + x.MiddleName).ToLower()
                 .Contains(text.ToLower()) && !x.IsDeleted).ToListAsync();
-        return result;
+        return _mapper.Map<IReadOnlyList<Teacher>>(result);
     }
 }

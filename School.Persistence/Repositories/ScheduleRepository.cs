@@ -1,21 +1,25 @@
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using School.Core.Model;
 using School.Core.Stores;
+using School.Persistence.Entities;
 
 namespace School.Persistence.Repositories;
 
 public class ScheduleRepository : IScheduleStore
 {
     private readonly SchoolDbContext _schoolDbContext;
+    private readonly IMapper _mapper;
 
-    public ScheduleRepository(SchoolDbContext schoolDbContext)
+    public ScheduleRepository(SchoolDbContext schoolDbContext, IMapper mapper)
     {
         _schoolDbContext = schoolDbContext;
+        _mapper = mapper;
     }
 
     public async Task<Schedule?> GetById(Guid id)
     {
-        return await _schoolDbContext.Schedules.FindAsync(id);
+        return _mapper.Map<Schedule>(await _schoolDbContext.Schedules.FindAsync(id));
     }
 
     public async Task<IReadOnlyList<ScheduleDto>> GetAll()
@@ -29,10 +33,6 @@ public class ScheduleRepository : IScheduleStore
                 LessonId = s.Lesson.Id,
                 Number = s.Number,
             }).ToListAsync();
-            
-        
-        
-        
         return result;
     }
 
@@ -40,19 +40,21 @@ public class ScheduleRepository : IScheduleStore
     {
         var curSchedule = await _schoolDbContext.Schedules.FindAsync(schedule.Id);
         if (curSchedule==null) throw new NullReferenceException("Schedule not found");
+        var scheduleEntity = _mapper.Map<ScheduleEntity>(schedule); 
         
-        curSchedule.Id = schedule.Id;
-        curSchedule.Lesson = schedule.Lesson;
-        curSchedule.GradeLevel = schedule.GradeLevel;
-        curSchedule.Teacher = schedule.Teacher;
+        curSchedule.Id = scheduleEntity.Id;
+        curSchedule.Lesson = scheduleEntity.Lesson;
+        curSchedule.GradeLevel = scheduleEntity.GradeLevel;
+        curSchedule.Teacher = scheduleEntity.Teacher;
         curSchedule.DayOfWeek = schedule.DayOfWeek;
         await _schoolDbContext.SaveChangesAsync();
-        return curSchedule;
+        return _mapper.Map<Schedule>(curSchedule);
     }
 
     public async Task Add(Schedule schedule)
     {
-        await _schoolDbContext.Schedules.AddAsync(schedule);
+        var scheduleEntity = _mapper.Map<ScheduleEntity>(schedule);
+        await _schoolDbContext.Schedules.AddAsync(scheduleEntity);
         await _schoolDbContext.SaveChangesAsync();
     }
 }

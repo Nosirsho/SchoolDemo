@@ -9,6 +9,7 @@ public class GradeLevelConfiguration : IEntityTypeConfiguration<GradeLevelEntity
     public void Configure(EntityTypeBuilder<GradeLevelEntity> builder)
     {
         builder.HasKey(x => x.Id);
+        builder.ToTable("GradeLevels");
 
         builder
             .HasMany(s => s.Students)

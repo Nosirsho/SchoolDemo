@@ -9,6 +9,7 @@ public class LessonConfiguration : IEntityTypeConfiguration<LessonEntity>
     public void Configure(EntityTypeBuilder<LessonEntity> builder)
     {
         builder.HasKey(x => x.Id);
+        builder.ToTable("Lessons");
 
         builder
             .HasOne(s => s.Schedule)

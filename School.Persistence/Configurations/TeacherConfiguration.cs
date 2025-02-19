@@ -9,6 +9,7 @@ public class TeacherConfiguration : IEntityTypeConfiguration<TeacherEntity>
     public void Configure(EntityTypeBuilder<TeacherEntity> builder)
     {
         builder.HasKey(x => x.Id);
+        builder.ToTable("Teachers");
 
         builder
             .HasOne(t => t.GradeLevel)

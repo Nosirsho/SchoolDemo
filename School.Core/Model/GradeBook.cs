@@ -25,6 +25,8 @@ public class GradeBook
     public Lesson Lesson { get; set; }
     public Teacher Teacher { get; set; }
     public Student Student { get; set; }
+    public Guid StudentId { get; set; }
+    public string StudentFullName { get; set; }
     public int Grade { get; set; }
     public string Topic { get; set; }
 

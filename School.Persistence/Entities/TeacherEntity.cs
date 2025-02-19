@@ -17,8 +17,4 @@ public class TeacherEntity
     public GradeLevelEntity? GradeLevel { get; set; }
     public Guid? GradeLevelId { get; set; }
     public IEnumerable<ScheduleEntity> Schedules { get; set; }
-    
-    public GradeBookEntity GradeBook { get; set; }
-    public Guid? GradeBookId { get; set; }
-    
 }

@@ -1,7 +1,8 @@
 ﻿namespace School.Core.Model;
 
-public class StudentGrade
+public class StudentGradeBook
 {
-    public Student Student { get; set; }
+    public Guid StudentId { get; set; }
+    public string StudentFullName { get; set; } 
     public List<GradeBookDay> Grades { get; set; }
 }

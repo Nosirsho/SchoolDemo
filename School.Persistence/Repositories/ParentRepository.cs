@@ -1,25 +1,31 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using School.Core.Model;
 using School.Core.Stores;
+using School.Persistence.Entities;
 
 namespace School.Persistence.Repositories;
 
 public class ParentRepository : IParentStore
 {
     private readonly SchoolDbContext _schoolDbContext;
+    private readonly IMapper _mapper;
 
-    public ParentRepository(SchoolDbContext schoolDbContext)
+    public ParentRepository(SchoolDbContext schoolDbContext, IMapper mapper)
     {
         _schoolDbContext = schoolDbContext;
+        _mapper = mapper;
     }
     public async Task<Parent?> GetById(Guid id)
     {
-        return await _schoolDbContext.Parents.FindAsync(id);
+        var parentEntity = await _schoolDbContext.Parents.FindAsync(id);
+        return _mapper.Map<Parent>(parentEntity);
     }
 
     public async Task<IReadOnlyList<Parent>> GetAll()
     {
-        return await _schoolDbContext.Parents.ToListAsync();
+        var parentEntities = await _schoolDbContext.Parents.ToListAsync();
+        return _mapper.Map<IReadOnlyList<Parent>>(parentEntities); await _schoolDbContext.Parents.ToListAsync();
     }
 
     public async Task<Parent> Update(Parent parent)
@@ -33,12 +39,15 @@ public class ParentRepository : IParentStore
         curParent.MiddleName = parent.MiddleName;
         curParent.Sex = parent.Sex;
         await _schoolDbContext.SaveChangesAsync();
-        return curParent;
+        var result = _mapper.Map<Parent>(curParent); 
+        return result;
     }
 
-    public async Task Add(Parent parent)
+    public async Task<Parent> Add(Parent parent)
     {
-        await _schoolDbContext.Parents.AddAsync(parent);
+        var parentEntity = _mapper.Map<ParentEntity>(parent);
+        await _schoolDbContext.Parents.AddAsync(parentEntity);
         await _schoolDbContext.SaveChangesAsync();
+        return _mapper.Map<Parent>(parentEntity);
     }
 }

@@ -24,7 +24,7 @@ public class SchoolDbContext: DbContext
     }
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=school;Username=postgres;Password=postgres;");
+        optionsBuilder.UseNpgsql("Host=localhost;Port=5433;Database=school3;Username=postgres;Password=postgres;");
         optionsBuilder.LogTo(System.Console.WriteLine);
     }
     
@@ -40,15 +40,17 @@ public class SchoolDbContext: DbContext
         modelBuilder.ApplyConfiguration(new RoleConfiguration());
         modelBuilder.ApplyConfiguration(new PermissionConfiguration());
         modelBuilder.ApplyConfiguration(new RolePermissionConfiguration());
+        modelBuilder.ApplyConfiguration(new GradeBookConfiguration());
         base.OnModelCreating(modelBuilder);
     }
 
-    public DbSet<Student> Students => Set<Student>();
-    public DbSet<Parent> Parents => Set<Parent>();
-    public DbSet<Teacher> Teachers => Set<Teacher>();
-    public DbSet<GradeLevel> GradeLevels => Set<GradeLevel>();
-    public DbSet<Lesson> Lessons => Set<Lesson>();
-    public DbSet<Schedule> Schedules => Set<Schedule>();
+    public DbSet<StudentEntity> Students => Set<StudentEntity>();
+    public DbSet<ParentEntity> Parents => Set<ParentEntity>();
+    public DbSet<TeacherEntity> Teachers => Set<TeacherEntity>();
+    public DbSet<GradeLevelEntity> GradeLevels => Set<GradeLevelEntity>();
+    public DbSet<LessonEntity> Lessons => Set<LessonEntity>();
+    public DbSet<ScheduleEntity> Schedules => Set<ScheduleEntity>();
     public DbSet<UserEntity> Users => Set<UserEntity>();
     public DbSet<RoleEntity> Roles => Set<RoleEntity>();
+    public DbSet<GradeBookEntity> GradeBooks => Set<GradeBookEntity>();
 }

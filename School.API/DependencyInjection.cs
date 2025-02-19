@@ -34,6 +34,7 @@ public static class DependencyInjection
         services.AddScoped<ScheduleService>();
         services.AddScoped<UserService>();
         services.AddScoped<PermissionService>();
+        services.AddScoped<GradeBookService>();
         
         services.AddScoped<IStudentStore, StudentRepository>();
         services.AddScoped<IParentStore, ParentRepository>();
@@ -45,6 +46,7 @@ public static class DependencyInjection
         services.AddScoped<IPermissionStore, UserRepository>();//IPermissionStore, UserRepository it's norm
         services.AddScoped<IJwtProvider, JwtProvider>();
         services.AddScoped<IPasswordHasher, PasswordHasher>();
+        services.AddScoped<IGradeBookStore, GradeBookRepository>();
         
         services.AddScoped<IValidator<CreateStudentRequest>, CreateStudentValidator>();
         services.AddScoped<IValidator<UpdateStudentRequest>, UpdateStudentValidator>();

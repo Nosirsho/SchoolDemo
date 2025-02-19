@@ -27,8 +27,8 @@ public class ParentService
         return await _parentStore.Update(parent);
     }
 
-    public async Task Create(Parent parent)
+    public async Task<Parent> Create(Parent parent)
     {
-        await _parentStore.Add(parent);
+        return await _parentStore.Add(parent);
     }
 }

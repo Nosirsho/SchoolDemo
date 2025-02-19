@@ -5,7 +5,7 @@ namespace School.Core.Stores;
 public interface IGradeBookStore
 {
     public Task<GradeBook?> GetById(Guid id);
-    public Task<IReadOnlyList<GradeBook>> GetAll();
+    public Task<ICollection<GradeBook>> GetAll();
     Task Add(GradeBook gradeLevel);
     public Task<GradeBook> Update(Guid id,
         DateTime date,

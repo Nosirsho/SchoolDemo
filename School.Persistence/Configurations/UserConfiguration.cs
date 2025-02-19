@@ -9,6 +9,8 @@ public class UserConfiguration : IEntityTypeConfiguration<UserEntity>{
     public void Configure(EntityTypeBuilder<UserEntity> builder)
     {
         builder.HasKey(u => u.Id);
+        builder.ToTable("Users");
+        
         builder.HasMany(u=>u.Roles)
             .WithMany(r=>r.Users)
             .UsingEntity<UserRoleEntity>(

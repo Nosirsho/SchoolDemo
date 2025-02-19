@@ -9,6 +9,7 @@ public class ParentConfiguration : IEntityTypeConfiguration<ParentEntity>
     public void Configure(EntityTypeBuilder<ParentEntity> builder)
     {
         builder.HasKey(x => x.Id);
+        builder.ToTable("Parents");
 
         builder.HasOne(s => s.Student)
             .WithMany(s => s.Parents)
