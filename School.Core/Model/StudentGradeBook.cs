@@ -3,5 +3,5 @@
 public class StudentGrade
 {
     public Student Student { get; set; }
-    public List<int> Grades { get; set; }
+    public List<GradeBookDay> Grades { get; set; }
 }
