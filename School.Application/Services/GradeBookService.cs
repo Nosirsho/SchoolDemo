@@ -23,11 +23,11 @@ public class GradeBookService
                 StudentFullName = d.First().Student.LastName + " " + d.First().Student.FirstName + " " + d.First().Student.MiddleName, // Get name from the first entry
                 Grades = d.Select(e => new GradeBookDay
                 {
-                    Date = e.Date,
+                    Date = e.Date.ToString("yyyy-MM-dd"),
                     Grade = e.Grade
                 }).ToList()
             })
-            .ToList(); 
+            .ToList();                                                                                                      
         return result;
     }
 }

@@ -1,4 +1,5 @@
 using School.Application.Services;
+using School.Core.Model;
 
 namespace School.API.Endpoints;
 
@@ -15,6 +16,7 @@ public static class GradeBookEndpoints
     private static async Task<IResult> GetGradeBooks(HttpContext context, GradeBookService servise)
     {
         var result = await servise.GetStudentGrades();
-        return Results.Ok(result);
+        
+        return Results.Ok(new ApiResponse<IEnumerable<StudentGradeBook>>(result));
     }
 }
