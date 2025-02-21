@@ -30,6 +30,16 @@ public class GradeBookRepository : IGradeBookStore
         return _mapper.Map<ICollection<GradeBook>>(await _context.GradeBooks.ToListAsync());
     }
 
+    public async Task<ICollection<GradeBook>> GetInterval(DateTime startDate, DateTime endDate)
+    {
+        var result = await _context.GradeBooks
+            .Include(s => s.Student)
+            .Include(s => s.Teacher)
+            .Include(s => s.Lesson)
+            .Where(gb => gb.Date >= startDate.ToUniversalTime() && gb.Date <= endDate.ToUniversalTime()).ToListAsync();
+        return _mapper.Map<ICollection<GradeBook>>(result);
+    }
+
     public Task Add(GradeBook gradeLevel)
     {
         throw new NotImplementedException();

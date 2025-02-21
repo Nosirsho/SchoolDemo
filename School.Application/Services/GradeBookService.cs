@@ -16,7 +16,26 @@ public class GradeBookService
     {
         var grades = await _gradeBookStore.GetAll();
         var result = grades
-            .GroupBy(s => s.Student.Id) // Group by Student.Id for uniqueness
+            .GroupBy(s => s.Student.Id) 
+            .Select(d => new StudentGradeBook
+            {
+                StudentId = d.Key,  // Key is now the Student.Id
+                StudentFullName = d.First().Student.LastName + " " + d.First().Student.FirstName + " " + d.First().Student.MiddleName, // Get name from the first entry
+                Grades = d.Select(e => new GradeBookDay
+                {
+                    Date = e.Date.ToString("yyyy-MM-dd"),
+                    Grade = e.Grade
+                }).ToList()
+            })
+            .ToList();                                                                                                      
+        return result;
+    }
+    
+    public async Task<IEnumerable<StudentGradeBook>> GetIntervalStudentGrades(DateTime startDate, DateTime endDate)
+    {
+        var grades = await _gradeBookStore.GetInterval(startDate, endDate);
+        var result = grades
+            .GroupBy(s => s.Student.Id) 
             .Select(d => new StudentGradeBook
             {
                 StudentId = d.Key,  // Key is now the Student.Id

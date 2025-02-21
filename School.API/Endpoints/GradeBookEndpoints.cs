@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc;
 using School.Application.Services;
 using School.Core.Model;
 
@@ -9,6 +10,7 @@ public static class GradeBookEndpoints
     {
         var endpoints = app.MapGroup("gradebook");
         endpoints.MapGet(string.Empty, GetGradeBooks);
+        endpoints.MapGet("/{start:datetime}/{end:datetime}", GetIntervalGradeBooks);
         
         return endpoints;
     }
@@ -16,6 +18,15 @@ public static class GradeBookEndpoints
     private static async Task<IResult> GetGradeBooks(HttpContext context, GradeBookService servise)
     {
         var result = await servise.GetStudentGrades();
+        
+        return Results.Ok(new ApiResponse<IEnumerable<StudentGradeBook>>(result));
+    }
+    private static async Task<IResult> GetIntervalGradeBooks(HttpContext context,
+        [FromRoute] DateTime start,
+        [FromRoute] DateTime end,
+        GradeBookService servise)
+    {
+        var result = await servise.GetIntervalStudentGrades(start, end);
         
         return Results.Ok(new ApiResponse<IEnumerable<StudentGradeBook>>(result));
     }
