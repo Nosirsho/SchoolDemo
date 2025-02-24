@@ -7,7 +7,8 @@ public interface IGradeBookStore
     public Task<GradeBook?> GetById(Guid id);
     public Task<ICollection<GradeBook>> GetAll();
     public Task<ICollection<GradeBook>> GetInterval(DateTime startDate, DateTime endDate);
-    Task Add(GradeBook gradeLevel);
+    public Task<ICollection<GradeBook>> GetByLessonInterval(DateTime startDate, DateTime endDate, Guid lessonId);
+    Task Add(GradeBook gradeBook);
     public Task<GradeBook> Update(Guid id,
         DateTime date,
         Lesson lesson,

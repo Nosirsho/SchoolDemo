@@ -23,6 +23,7 @@ public class GradeBookService
                 StudentFullName = d.First().Student.LastName + " " + d.First().Student.FirstName + " " + d.First().Student.MiddleName, // Get name from the first entry
                 Grades = d.Select(e => new GradeBookDay
                 {
+                    Id = e.Id,
                     Date = e.Date.ToString("yyyy-MM-dd"),
                     Grade = e.Grade
                 }).ToList()
@@ -42,11 +43,36 @@ public class GradeBookService
                 StudentFullName = d.First().Student.LastName + " " + d.First().Student.FirstName + " " + d.First().Student.MiddleName, // Get name from the first entry
                 Grades = d.Select(e => new GradeBookDay
                 {
+                    Id = e.Id,
                     Date = e.Date.ToString("yyyy-MM-dd"),
                     Grade = e.Grade
                 }).ToList()
             })
             .ToList();                                                                                                      
         return result;
+    }
+    
+    public async Task<IEnumerable<StudentGradeBook>> GetByLessonIntervalStudentGrades(DateTime startDate, DateTime endDate, Guid lessonId)
+    {
+        var grades = await _gradeBookStore.GetByLessonInterval(startDate, endDate, lessonId);
+        var result = grades
+            .GroupBy(s => s.Student.Id) 
+            .Select(d => new StudentGradeBook
+            {
+                StudentId = d.Key,  // Key is now the Student.Id
+                StudentFullName = d.First().Student.LastName + " " + d.First().Student.FirstName + " " + d.First().Student.MiddleName, // Get name from the first entry
+                Grades = d.Select(e => new GradeBookDay
+                {
+                    Id = e.Id,
+                    Date = e.Date.ToString("yyyy-MM-dd"),
+                    Grade = e.Grade
+                }).ToList()
+            })
+            .ToList();                                                                                                      
+        return result;
+    }
+    public async Task Create(GradeBook gradeBook)
+    {
+        await _gradeBookStore.Add(gradeBook);
     }
 }
