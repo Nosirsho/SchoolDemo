@@ -1,3 +1,4 @@
+using System.Globalization;
 using School.Core.Enums;
 using School.Core.Model;
 
@@ -29,5 +30,11 @@ public static class HelperService
     public static string GetSexFromDb(object obj)
     {
         return GetSexText(ParseToSexFromDb(obj));
+    }
+    public static string ConvertTimeFromUtc(DateTime  timeUtc)
+    {
+        TimeZoneInfo cstZone = TimeZoneInfo.FindSystemTimeZoneById("India Standard Time");
+        DateTime cstTime = TimeZoneInfo.ConvertTimeFromUtc(timeUtc, cstZone);
+        return cstTime.ToString("yyyy-MM-dd");
     }
 }

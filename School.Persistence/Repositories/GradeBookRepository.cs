@@ -16,9 +16,17 @@ public class GradeBookRepository : IGradeBookStore
         _context = context;
         _mapper = mapper;
     }
-    public Task<GradeBook?> GetById(Guid id)
+    public async Task<GradeBook?> GetById(Guid id)
     {
-        throw new NotImplementedException();
+        var gradeBookEntity = await _context.GradeBooks.FirstOrDefaultAsync(s => s.Id == id && !s.IsDeleted);
+        if (gradeBookEntity == null) throw new NullReferenceException($"GradeBook not found with id {id}");
+        return _mapper.Map<GradeBook>(gradeBookEntity);
+    }
+
+    public async Task<GradeBook?> GetByCriteria(Guid studentId, Guid lessonId, DateTime date)
+    {
+        var gradeBook = await _context.GradeBooks.FirstOrDefaultAsync(g => g.LessonId == lessonId && g.Date == date && !g.IsDeleted);
+        return _mapper.Map<GradeBook>(gradeBook);
     }
 
     public async Task<ICollection<GradeBook>> GetAll()
@@ -44,7 +52,7 @@ public class GradeBookRepository : IGradeBookStore
             .Select(x => x.GradeBook != null ? _mapper.Map<GradeBook>(x.GradeBook) : _mapper.Map<GradeBook>(new GradeBookEntity()
             {
                 Student = x.Student,
-                Date = DateTime.MinValue
+                Date = DateTime.UnixEpoch
             }))
             .ToList();
         return result;
@@ -73,7 +81,7 @@ public class GradeBookRepository : IGradeBookStore
             .Select(x => x.GradeBook != null ? _mapper.Map<GradeBook>(x.GradeBook) : _mapper.Map<GradeBook>(new GradeBookEntity()
             {
                 Student = x.Student,
-                Date = DateTime.MinValue
+                Date = DateTime.UnixEpoch
             }))
             .ToList();
 
@@ -103,8 +111,8 @@ public class GradeBookRepository : IGradeBookStore
             .Select(x => x.GradeBook != null ? _mapper.Map<GradeBook>(x.GradeBook) : _mapper.Map<GradeBook>(new GradeBookEntity()
             {
                 Student = x.Student,
-                Date = DateTime.MinValue
-            }))
+                Date = DateTime.UnixEpoch
+            })).Where(gr=>!gr.IsDeleted)
             .ToList();
 
         return result;
@@ -120,5 +128,15 @@ public class GradeBookRepository : IGradeBookStore
     public Task<GradeBook> Update(Guid id, DateTime date, Lesson lesson, Teacher teacher, Student student, int grade, string topic)
     {
         throw new NotImplementedException();
+    }
+
+    public async Task<Guid> Delete(Guid id)
+    {
+        var gradeBookEntity = await _context.GradeBooks.FirstOrDefaultAsync(s => s.Id == id && !s.IsDeleted);
+        if (gradeBookEntity == null) throw new Exception("Grade book not found");
+        gradeBookEntity.IsDeleted = true;
+        //gradeBookEntity.Date = DateTime.UtcNow;
+        await _context.SaveChangesAsync();
+        return id;
     }
 }

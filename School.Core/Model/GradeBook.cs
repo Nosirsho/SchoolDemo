@@ -31,6 +31,8 @@ public class GradeBook
     public string StudentFullName { get; set; }
     public int Grade { get; set; }
     public string Topic { get; set; }
+    public bool IsDeleted { get; set; } = false;
+    public DateTime DaletedAt { get; set; }
 
     public static GradeBook Create( 
         Guid id,
@@ -41,7 +43,7 @@ public class GradeBook
         int grade,
         string topic)
     {
-        if (grade is < 0 or > 5) throw new ArgumentException("Некорректная оценка!");
+        if (grade is < 1 or > 5) throw new ArgumentException("Некорректная оценка!");
         return new GradeBook(id, date, lessonId, teacherId, studentId, grade, topic);
     }
 }

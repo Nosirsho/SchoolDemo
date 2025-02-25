@@ -1,7 +1,6 @@
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using School.API.Contracts.GradeBook;
-using School.API.Contracts.GradeLevel;
 using School.API.Validations.GradeBook;
 using School.Application.Services;
 using School.Core.Model;
@@ -49,29 +48,34 @@ public static class GradeBookEndpoints
     
     private static async Task<IResult> CreateGradeBook(
         [FromBody] CreateGradeBookRequest request,
-        //IValidator<CreateGradeBookRequestValidator> validator,
+        IValidator<CreateGradeBookRequest> validator,
         GradeBookService service)
     {
-        //var validationResult = await validator.ValidateAsync(request);
-        // if (!validationResult.IsValid)
-        // {
-        //     string? errors = string.Join(Environment.NewLine, validationResult.Errors.Select(e => e.ErrorMessage));
-        //     return Results.Ok( new ApiResponse<object>(0, errors));
-        // }
-        var gradeBook = GradeBook.Create(
-            new Guid(),
-            request.Date,
-            request.LessonId,
-            new Guid("bb748ca0-1b09-4d8b-ab5b-62177dad6a76"),
-            request.StudentId,
-            request.Grade,
-            ""
-        );
-        await service.Create(gradeBook);
-        //var response = new GetGradeLevelResponse(gradeBook.Id, gradeLevel.Name);
-        return Results.Ok( new ApiResponse<GradeBook>(gradeBook));
+        try
+        {
+            var validationResult = await validator.ValidateAsync(request);
+            if (!validationResult.IsValid)
+            {
+                string? errors = string.Join(Environment.NewLine, validationResult.Errors.Select(e => e.ErrorMessage));
+                return Results.Ok(new ApiResponse<object>(0, errors));
+            }
 
-        
-       
+            var gradeBook = GradeBook.Create(
+                new Guid(),
+                request.Date.ToUniversalTime(),
+                request.LessonId,
+                new Guid("bb748ca0-1b09-4d8b-ab5b-62177dad6a76"),
+                request.StudentId,
+                request.Grade,
+                ""
+            );
+            await service.Create(gradeBook);
+            //var response = new GetGradeLevelResponse(gradeBook.Id, gradeLevel.Name);
+            return Results.Ok(new ApiResponse<GradeBook>(gradeBook, 1, "Grade book created"));
+        }
+        catch (Exception e)
+        {
+            return Results.Ok(new ApiResponse<object>( 0, e.Message));
+        }
     }
 }

@@ -9,9 +9,10 @@ public class CreateGradeBookRequestValidator: AbstractValidator<CreateGradeBookR
     {
         RuleFor(l=>l.StudentId).NotNull().NotEqual(Guid.Empty);
         RuleFor(l=>l.LessonId).NotNull().NotEqual(Guid.Empty);
-        RuleFor(l=>l.Grade).InclusiveBetween(1, 5);
+        RuleFor(l=>l.Grade).NotNull().NotEmpty().InclusiveBetween(1, 5);
+        
         // RuleFor(l=>l.Date).Must(BeToday)
-        //     .WithMessage("Дата должна быть сегодняшней.");
+        //      .WithMessage("Дата должна быть сегодняшней.");
     }
     // private bool BeToday(DateTime date)
     // {

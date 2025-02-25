@@ -59,12 +59,12 @@ public class GradeBookService
             .GroupBy(s => s.Student.Id) 
             .Select(d => new StudentGradeBook
             {
-                StudentId = d.Key,  // Key is now the Student.Id
+                StudentId = d.Key,
                 StudentFullName = d.First().Student.LastName + " " + d.First().Student.FirstName + " " + d.First().Student.MiddleName, // Get name from the first entry
                 Grades = d.Select(e => new GradeBookDay
                 {
                     Id = e.Id,
-                    Date = e.Date.ToString("yyyy-MM-dd"),
+                    Date = HelperService.ConvertTimeFromUtc(e.Date),
                     Grade = e.Grade
                 }).ToList()
             })
@@ -73,6 +73,11 @@ public class GradeBookService
     }
     public async Task Create(GradeBook gradeBook)
     {
+        var grade =  await _gradeBookStore.GetByCriteria(gradeBook.StudentId, gradeBook.LessonId, gradeBook.Date);
+        if (grade != null)
+        {
+            await _gradeBookStore.Delete(grade.Id);
+        }
         await _gradeBookStore.Add(gradeBook);
     }
 }
