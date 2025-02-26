@@ -41,6 +41,8 @@ public class SchoolDbContext: DbContext
         modelBuilder.ApplyConfiguration(new PermissionConfiguration());
         modelBuilder.ApplyConfiguration(new RolePermissionConfiguration());
         modelBuilder.ApplyConfiguration(new GradeBookConfiguration());
+        modelBuilder.ApplyConfiguration(new SysSettingTypeConfiguration());
+        modelBuilder.ApplyConfiguration(new SysSettingConfiguration());
         base.OnModelCreating(modelBuilder);
     }
 
@@ -53,4 +55,6 @@ public class SchoolDbContext: DbContext
     public DbSet<UserEntity> Users => Set<UserEntity>();
     public DbSet<RoleEntity> Roles => Set<RoleEntity>();
     public DbSet<GradeBookEntity> GradeBooks => Set<GradeBookEntity>();
+    public DbSet<SysSettingTypeEntity> SysSettingType => Set<SysSettingTypeEntity>();
+    public DbSet<SysSettingEntity> SysSettings => Set<SysSettingEntity>();
 }

@@ -18,6 +18,7 @@ public static class ApiExtensions
         app.MapGradeLevelEndpoint();
         app.MapParentsEndpoint();
         app.MapGradeBookEndpoints();
+        app.MapSysSettingEndpoints();
     }
 
     public static void AddApiAuthentication(
