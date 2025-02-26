@@ -80,4 +80,8 @@ public class GradeBookService
         }
         await _gradeBookStore.Add(gradeBook);
     }
+    public async Task Delete(Guid gradeBookId)
+    {
+        await _gradeBookStore.Delete(gradeBookId);
+    }
 }

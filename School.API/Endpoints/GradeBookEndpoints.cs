@@ -1,7 +1,6 @@
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using School.API.Contracts.GradeBook;
-using School.API.Validations.GradeBook;
 using School.Application.Services;
 using School.Core.Model;
 
@@ -16,6 +15,7 @@ public static class GradeBookEndpoints
         endpoints.MapGet("/{start:datetime}/{end:datetime}", GetIntervalGradeBooks);
         endpoints.MapGet("/{lessonId:guid}/{start:datetime}/{end:datetime}", GetByLessonIntervalGradeBooks);
         endpoints.MapPost(string.Empty, CreateGradeBook);
+        app.MapDelete("/{id:guid}", DeleteCurrentDayGradeBook);
         
         return endpoints;
     }
@@ -70,12 +70,20 @@ public static class GradeBookEndpoints
                 ""
             );
             await service.Create(gradeBook);
-            //var response = new GetGradeLevelResponse(gradeBook.Id, gradeLevel.Name);
             return Results.Ok(new ApiResponse<GradeBook>(gradeBook, 1, "Grade book created"));
         }
         catch (Exception e)
         {
             return Results.Ok(new ApiResponse<object>( 0, e.Message));
         }
+    }
+
+    private static async Task<IResult> DeleteCurrentDayGradeBook(
+        [FromRoute] Guid id,
+        GradeBookService servise
+        )
+    {
+        await servise.Delete(id);
+        return Results.Ok(new ApiResponse<Guid>(id, 1, "Grade book deleted"));
     }
 }
