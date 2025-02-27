@@ -9,7 +9,7 @@ public class SysSetting
     public string Code { get; set; }
     public SysSettingType Type { get; set; }    
     public int IntegerValue { get; set; }
-    public DateTime DateTmeValue { get; set; }
+    public DateTime DateTimeValue { get; set; }
     public bool BooleanValue { get; set; }
     public string StringValue { get; set; } = string.Empty;
     public Guid GuidValue { get; set; }

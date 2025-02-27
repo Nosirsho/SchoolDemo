@@ -28,4 +28,27 @@ public static class BaseConstant
                 throw new ArgumentException($"Invalid SysSettingType name: {name}");
         }
     }
+    public static string GetNameById(Guid id)
+    {
+        if (id == SysSettingType.String)
+        {
+            return "String";
+        } else if (id == SysSettingType.Integer)
+        {
+            return "Integer";
+        } else if (id == SysSettingType.Boolean)
+        {
+            return "Boolean";
+        }else if (id == SysSettingType.DateTime)
+        {
+            return "DateTime";
+        }else if (id == SysSettingType.Guid)
+        {
+            return "Guid";
+        }
+        else
+        {
+            throw new ArgumentException($"Invalid SysSettingType name: {id}");
+        }
+    }
 }

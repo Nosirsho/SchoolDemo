@@ -21,5 +21,10 @@ public class DataBaseMappings : Profile
         CreateMap<GradeBookEntity, GradeBook>();
             //.ForMember(dest=>dest.StudentId, opt=>opt.MapFrom(src=>src.Student.Id));
         CreateMap<GradeBookEntity, GradeBook>().ReverseMap();
+        CreateMap<SysSettingEntity, SysSetting>()
+            .ForMember(dest => dest.Type, act 
+                => act.MapFrom(src => src.SysSettingTypeId));
+            
+        CreateMap<SysSettingEntity, SysSetting>().ReverseMap();
     }
 }

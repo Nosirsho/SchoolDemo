@@ -1,6 +1,8 @@
 using System.Reflection.Metadata;
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using School.Core.Constants;
+using School.Core.Model;
 using School.Core.Stores;
 using School.Persistence.Entities;
 
@@ -9,10 +11,12 @@ namespace School.Persistence.Repositories;
 public class SysSettingRepository : ISysSettingStore
 {
     private readonly SchoolDbContext _schoolDbContext;
+    private readonly IMapper _mapper;
 
-    public SysSettingRepository( SchoolDbContext schoolDbContext)
+    public SysSettingRepository( SchoolDbContext schoolDbContext, IMapper mapper )
     {
         _schoolDbContext = schoolDbContext;
+        _mapper = mapper;
     }
     public async Task<string> GetValueByCode(string code)
     {
@@ -35,7 +39,7 @@ public class SysSettingRepository : ISysSettingStore
         }
         else if (sysSettingEntity.SysSettingTypeId == BaseConstant.SysSettingType.DateTime)
         {
-            return sysSettingEntity.DateTmeValue.ToString("yyyy-MM-dd");
+            return sysSettingEntity.DateTimeValue.ToString("yyyy-MM-dd");
         }
         else if (sysSettingEntity.SysSettingTypeId == BaseConstant.SysSettingType.Guid)
         {
@@ -78,7 +82,7 @@ public class SysSettingRepository : ISysSettingStore
             sysSettingEntity.BooleanValue = bool.Parse(value);
         } else if (sysSettinfType.Id == BaseConstant.SysSettingType.DateTime)
         {
-            sysSettingEntity.DateTmeValue = DateTime.Parse(value);
+            sysSettingEntity.DateTimeValue = DateTime.Parse(value).ToUniversalTime();
         } else if (sysSettinfType.Id == BaseConstant.SysSettingType.Guid)
         {
             sysSettingEntity.GuidValue = Guid.Parse(value);
@@ -89,5 +93,11 @@ public class SysSettingRepository : ISysSettingStore
         await _schoolDbContext.AddAsync(sysSettingEntity);
         await _schoolDbContext.SaveChangesAsync();
         return sysSettingEntity.Id;
+    }
+
+    public async Task<ICollection<SysSetting>> GetAll()
+    {
+        var sysSettingEntities = await _schoolDbContext.SysSettings.ToListAsync();
+        return _mapper.Map<ICollection<SysSetting>>(sysSettingEntities);
     }
 }

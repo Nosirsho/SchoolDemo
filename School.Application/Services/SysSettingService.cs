@@ -21,5 +21,10 @@ public class SysSettingService
     {
         return await _sysSettingStore.CreateSysSetting(code, typeId, value);
     }
+    
+    public async Task<ICollection<SysSetting>> GetSysSettingList()
+    {
+        return await _sysSettingStore.GetAll();
+    }
 
 }
