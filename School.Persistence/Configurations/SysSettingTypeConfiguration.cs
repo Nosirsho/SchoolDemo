@@ -15,7 +15,7 @@ public class SysSettingTypeConfiguration: IEntityTypeConfiguration<SysSettingTyp
         builder.ToTable("SysSettingType");
         
         var sysSettingTypes = Enum
-            .GetValues<SysSettingType>()
+            .GetValues<SysSettingTypeEnum>()
             .Select( p => new SysSettingTypeEntity
             {
                 Id = BaseConstant.GetByName(p.ToString()),

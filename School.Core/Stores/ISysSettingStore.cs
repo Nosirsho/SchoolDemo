@@ -6,5 +6,6 @@ public interface ISysSettingStore
 {
     Task<string> GetValueByCode(string code);
     Task<Guid> CreateSysSetting(string code, Guid typeId, string value);
-    Task<ICollection<SysSetting>> GetAll();
+    Task<IReadOnlyList<SysSetting>> GetAll();
+    Task<SysSetting> GetById(Guid id);
 }

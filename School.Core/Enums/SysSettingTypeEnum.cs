@@ -1,6 +1,6 @@
 namespace School.Core.Enums;
 
-public enum SysSettingType
+public enum SysSettingTypeEnum
 {
     String = 1,
     Integer = 2,

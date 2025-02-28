@@ -3,8 +3,9 @@ namespace School.API.Contracts.SysSetting;
 public record GetSysSettingListResponse(
     Guid Id, 
     string Name, 
-    string Code, 
-    string Type, 
+    string Code,
+    string Type,
+    Guid TypeId,
     int IntegerValue, 
     string DateValue,
     bool BooleanValue,

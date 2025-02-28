@@ -14,6 +14,7 @@ public static class SysSettingEndpoints
         var endpoints = app.MapGroup("syssetting");
         endpoints.MapGet("/{code}", GetSysSettingByCode);
         endpoints.MapGet("/type", GetSysSettingTypes);
+        endpoints.MapGet("{id:guid}", GetById);
         endpoints.MapGet(string.Empty, GetSysSettings);
         endpoints.MapPost(string.Empty, SetSysSetting);
         return endpoints;
@@ -24,8 +25,15 @@ public static class SysSettingEndpoints
         SysSettingService service
         )
     {
-        var sysSetingValue = await service.GetSysSettingValueByCode(code);
-        return Results.Ok(new ApiResponse<string>(sysSetingValue));
+        try
+        {
+            var sysSetingValue = await service.GetSysSettingValueByCode(code);
+            return Results.Ok(new ApiResponse<string>(sysSetingValue));
+        }
+        catch (Exception e)
+        {
+            return Results.Ok(new ApiResponse<object>(0, e.Message));
+        }
     }
 
     private static async Task<IResult> SetSysSetting(
@@ -45,11 +53,17 @@ public static class SysSettingEndpoints
 
     private static IResult GetSysSettingTypes()
     {
-        var types = Enum
-            .GetValues<SysSettingType>()
-            .Select( p => new GetSysSettingResponse(BaseConstant.GetByName(p.ToString()), (int)p,p.ToString()));
-        var result = new ApiResponse<IEnumerable<GetSysSettingResponse>>(types);
-        return Results.Ok(result);
+        try
+        {
+            var types = Enum
+                .GetValues<SysSettingTypeEnum>()
+                .Select( p => new GetSysSettingResponse(BaseConstant.GetByName(p.ToString()), (int)p,p.ToString()));
+            return Results.Ok(new ApiResponse<IEnumerable<GetSysSettingResponse>>(types));
+        }
+        catch (Exception e)
+        {
+            return Results.Ok(new ApiResponse<object>(0, e.Message));
+        }
     }
     private static async Task<IResult> GetSysSettings(
         SysSettingService service
@@ -58,7 +72,7 @@ public static class SysSettingEndpoints
         try
         {
             var sysSettings = await service.GetSysSettingList();
-            var sysSettingList = sysSettings.Select(sysSetting => new GetSysSettingListResponse(sysSetting.Id, sysSetting.Name, sysSetting.Code, sysSetting.Type.ToString(), sysSetting.IntegerValue, sysSetting.DateTimeValue.ToString("yyyy-MM-dd"), sysSetting.BooleanValue, sysSetting.StringValue, sysSetting.GuidValue));
+            var sysSettingList = sysSettings.Select(sysSetting => new GetSysSettingListResponse(sysSetting.Id, sysSetting.Name, sysSetting.Code, sysSetting.Type.Name, sysSetting.Type.Id, sysSetting.IntegerValue, sysSetting.DateTimeValue.ToString("yyyy-MM-dd"), sysSetting.BooleanValue, sysSetting.StringValue, sysSetting.GuidValue));
             var result = new ApiResponse<IEnumerable<GetSysSettingListResponse>>(sysSettingList);
             return Results.Ok(result);
         }
@@ -66,6 +80,22 @@ public static class SysSettingEndpoints
         {
             var result = new ApiResponse<object>(0, e.Message);
             return Results.Ok(result);
+        }
+    }
+
+    private static async Task<IResult> GetById(Guid id, SysSettingService service)
+    {
+        try
+        {
+            var sysSetting = await service.GetSysSettingById(id);
+            var result = new GetSysSettingListResponse(sysSetting.Id, sysSetting.Name, sysSetting.Code, 
+                sysSetting.Type.Name, sysSetting.Type.Id, sysSetting.IntegerValue, 
+                sysSetting.DateTimeValue.ToString("yyyy-MM-dd"), sysSetting.BooleanValue, sysSetting.StringValue, sysSetting.GuidValue);
+            return Results.Ok( new ApiResponse<GetSysSettingListResponse>(result));
+        }
+        catch (Exception e)
+        {
+            return Results.Ok( new ApiResponse<object>(0, e.Message));
         }
     }
 }

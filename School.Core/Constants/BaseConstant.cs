@@ -51,4 +51,40 @@ public static class BaseConstant
             throw new ArgumentException($"Invalid SysSettingType name: {id}");
         }
     }
+
+    public static Enums.SysSettingTypeEnum GetById(Guid id)
+    {
+        if (id == SysSettingType.String) {
+            return Enums.SysSettingTypeEnum.String;
+        } else if (id == SysSettingType.Integer) {
+            return Enums.SysSettingTypeEnum.Integer;
+        } else if (id == SysSettingType.Boolean) {
+            return Enums.SysSettingTypeEnum.Boolean;
+        } else if (id == SysSettingType.DateTime) {
+            return Enums.SysSettingTypeEnum.DateTime;
+        } else if (id == SysSettingType.Guid) {
+            return Enums.SysSettingTypeEnum.Guid;
+        } else {
+            throw new ArgumentException($"Invalid SysSettingType name: {id}");
+        }
+    }
+
+    public static Guid GetByEnum(Enums.SysSettingTypeEnum typeEnum)
+    {
+        switch (typeEnum)
+        {
+            case Enums.SysSettingTypeEnum.String:
+                return SysSettingType.String;
+            case Enums.SysSettingTypeEnum.Integer:
+                return SysSettingType.Integer;
+            case Enums.SysSettingTypeEnum.Boolean:
+                return SysSettingType.Boolean;
+            case Enums.SysSettingTypeEnum.DateTime:
+                return SysSettingType.DateTime;
+            case Enums.SysSettingTypeEnum.Guid:
+                return SysSettingType.Guid;
+            default:
+                throw new ArgumentException($"Invalid Enums.SysSettingType name: {typeEnum}");
+        }
+    }
 }

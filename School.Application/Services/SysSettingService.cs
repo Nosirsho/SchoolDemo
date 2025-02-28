@@ -22,9 +22,14 @@ public class SysSettingService
         return await _sysSettingStore.CreateSysSetting(code, typeId, value);
     }
     
-    public async Task<ICollection<SysSetting>> GetSysSettingList()
+    public async Task<IReadOnlyList<SysSetting>> GetSysSettingList()
     {
         return await _sysSettingStore.GetAll();
+    }
+
+    public async Task<SysSetting> GetSysSettingById(Guid id)
+    {
+        return await _sysSettingStore.GetById(id);
     }
 
 }

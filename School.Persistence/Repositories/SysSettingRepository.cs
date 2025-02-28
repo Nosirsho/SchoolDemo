@@ -95,9 +95,17 @@ public class SysSettingRepository : ISysSettingStore
         return sysSettingEntity.Id;
     }
 
-    public async Task<ICollection<SysSetting>> GetAll()
+    public async Task<IReadOnlyList<SysSetting>> GetAll()
     {
-        var sysSettingEntities = await _schoolDbContext.SysSettings.ToListAsync();
-        return _mapper.Map<ICollection<SysSetting>>(sysSettingEntities);
+        var sysSettingEntities = await _schoolDbContext.SysSettings.Include(ss=>ss.Type).ToListAsync();
+        return _mapper.Map<IReadOnlyList<SysSetting>>(sysSettingEntities);
+    }
+
+    public async Task<SysSetting> GetById(Guid id)
+    {
+        var result = await _schoolDbContext.SysSettings
+            .Include(ss=>ss.Type)
+            .FirstOrDefaultAsync(s => s.Id == id);
+        return _mapper.Map<SysSetting>(result);
     }
 }
