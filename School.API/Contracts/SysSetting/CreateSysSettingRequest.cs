@@ -1,3 +1,3 @@
 namespace School.API.Contracts.SysSetting;
 
-public record CreateSysSettingRequest(string Code, Guid TypeId, string Value);
+public record CreateSysSettingRequest(string Name, string Code, Guid TypeId, string Value);

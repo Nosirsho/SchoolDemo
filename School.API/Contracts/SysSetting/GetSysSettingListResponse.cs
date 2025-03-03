@@ -6,6 +6,7 @@ public record GetSysSettingListResponse(
     string Code,
     string Type,
     Guid TypeId,
+    int TypeNumber,
     int IntegerValue, 
     string DateValue,
     bool BooleanValue,

@@ -18,6 +18,37 @@ public class SysSettingRepository : ISysSettingStore
         _schoolDbContext = schoolDbContext;
         _mapper = mapper;
     }
+
+    public async Task<SysSetting> UpdateSysSetting(Guid id, string name, string code, Guid typeId, string value)
+    {
+        var sysSettingEntity =await _schoolDbContext.SysSettings.Include(t=>t.Type).FirstOrDefaultAsync( s => s.Id == id );
+        if (sysSettingEntity == null) throw new Exception("SysSetting not found " + id);
+        sysSettingEntity.Name = name;
+        sysSettingEntity.Code = code;
+        sysSettingEntity.SysSettingTypeId = typeId;
+        if (typeId == BaseConstant.SysSettingType.String)
+        {
+            sysSettingEntity.StringValue = value;
+        } else if (typeId == BaseConstant.SysSettingType.Integer)
+        {
+            sysSettingEntity.IntegerValue = int.Parse(value);
+        } else if (typeId == BaseConstant.SysSettingType.Boolean)
+        {
+            sysSettingEntity.BooleanValue = bool.Parse(value);
+        } else if (typeId== BaseConstant.SysSettingType.DateTime)
+        {
+            sysSettingEntity.DateTimeValue = DateTime.Parse(value).ToUniversalTime();
+        } else if (typeId== BaseConstant.SysSettingType.Guid)
+        {
+            sysSettingEntity.GuidValue = Guid.Parse(value);
+        } else {
+            throw new KeyNotFoundException($"SysSetting with type { typeId } not found!");
+        }
+
+        await _schoolDbContext.SaveChangesAsync();
+        return _mapper.Map<SysSetting>(sysSettingEntity);
+    }
+
     public async Task<string> GetValueByCode(string code)
     {
         var sysSettingEntity = await _schoolDbContext.SysSettings.FirstOrDefaultAsync(s => s.Code == code);
@@ -51,7 +82,7 @@ public class SysSettingRepository : ISysSettingStore
         }
     }
 
-    public async Task<Guid> CreateSysSetting(string code, Guid typeId, string value)
+    public async Task<Guid> CreateSysSetting(string name, string code, Guid typeId, string value)
     {
         var sysSetting = await _schoolDbContext.SysSettings.FirstOrDefaultAsync(s => s.Code == code);
         if (sysSetting != null)
@@ -68,6 +99,7 @@ public class SysSettingRepository : ISysSettingStore
         var sysSettingEntity = new SysSettingEntity()
         {
             Id = new Guid(),
+            Name = name,
             Code = code,
             SysSettingTypeId = sysSettinfType.Id,
         };

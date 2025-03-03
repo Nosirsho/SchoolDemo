@@ -17,11 +17,15 @@ public class SysSettingService
         return await _sysSettingStore.GetValueByCode(code);
     }
 
-    public async Task<Guid> CreateSysSetting(string code, Guid typeId, string value)
+    public async Task<Guid> CreateSysSetting(string name, string code, Guid typeId, string value)
     {
-        return await _sysSettingStore.CreateSysSetting(code, typeId, value);
+        return await _sysSettingStore.CreateSysSetting(name, code, typeId, value);
     }
     
+    public async Task<SysSetting> UpdateSysSetting(Guid id, string name, string code, Guid typeId, string value)
+    {
+        return await _sysSettingStore.UpdateSysSetting(id, name, code, typeId, value);
+    }
     public async Task<IReadOnlyList<SysSetting>> GetSysSettingList()
     {
         return await _sysSettingStore.GetAll();
