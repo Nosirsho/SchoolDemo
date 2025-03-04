@@ -5,6 +5,7 @@ using School.API.Contracts.Lesson;
 using School.API.Contracts.Parent;
 using School.API.Contracts.Schedule;
 using School.API.Contracts.Student;
+using School.API.Contracts.SysSetting;
 using School.API.Contracts.Teacher;
 using School.API.Validations.GradeBook;
 using School.API.Validations.Schedule;
@@ -12,6 +13,7 @@ using School.API.Validations.GradeLevel;
 using School.API.Validations.Lesson;
 using School.API.Validations.Parent;
 using School.API.Validations.Student;
+using School.API.Validations.SysSetting;
 using School.API.Validations.Teacher;
 using School.Application.Interfaces.Auth;
 using School.Application.Services;
@@ -64,7 +66,10 @@ public static class DependencyInjection
         services.AddScoped<IValidator<UpdateLessonRequest>, UpdateLessonValidator>();
         services.AddScoped<IValidator<CreateScheduleRequest>, CreateScheduleValidator>();
         services.AddScoped<IValidator<UpdateScheduleRequest>, UpdateScheduleValidator>();
+        services.AddScoped<IValidator<ScheduleRequest>, ScheduleRequestValidator>();
         services.AddScoped<IValidator<CreateGradeBookRequest>, CreateGradeBookRequestValidator>();
+        services.AddScoped<IValidator<CreateSysSettingRequest>, CreateSysSettingValidator>();
+        
        
         return services;
     }

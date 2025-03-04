@@ -11,4 +11,7 @@ public class ScheduleEntity
     public Guid TeacherId { get; set; }
     public GradeLevelEntity GradeLevel { get; set; }
     public Guid GradeLevelId { get; set; }
+    public DateTime CreatedOn { get; set; }
+    public DateTime? ModifiedOn { get; set; }
+    public bool IsActive { get; set; }
 }

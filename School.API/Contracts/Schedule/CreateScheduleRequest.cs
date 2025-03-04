@@ -5,4 +5,4 @@ public record CreateScheduleRequest(
     Guid LessonId, 
     Guid TeacherId, 
     Guid GradeLevelId
-    );
+);

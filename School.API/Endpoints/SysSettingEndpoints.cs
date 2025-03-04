@@ -1,5 +1,7 @@
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using School.API.Contracts.SysSetting;
+using School.API.Validations.SysSetting;
 using School.Application.Services;
 using School.Core.Constants;
 using School.Core.Enums;
@@ -56,10 +58,17 @@ public static class SysSettingEndpoints
     private static async Task<IResult> UpdateSysSetting(
         [FromRoute] Guid id,
         [FromBody] CreateSysSettingRequest request,
+        IValidator<CreateSysSettingRequest> validator,
         SysSettingService service)
     {
         try
         {
+            var validateResult = await validator.ValidateAsync(request);
+            if (!validateResult.IsValid)
+            {
+                string? errors = string.Join(Environment.NewLine, validateResult.Errors.Select(e => e.ErrorMessage));
+                return Results.Ok(new ApiResponse<object>(0, errors));
+            }   
             var sysSetting = await service.UpdateSysSetting(id, request.Name, request.Code, request.TypeId, request.Value);
             var result = new GetSysSettingListResponse(sysSetting.Id, sysSetting.Name, sysSetting.Code, 
                 sysSetting.Type.Name, sysSetting.Type.Id, (int)BaseConstant.GetById(sysSetting.Type.Id),
