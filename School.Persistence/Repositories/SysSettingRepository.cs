@@ -2,6 +2,7 @@ using System.Reflection.Metadata;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using School.Core.Constants;
+using School.Core.Helper;
 using School.Core.Model;
 using School.Core.Stores;
 using School.Persistence.Entities;
@@ -45,6 +46,8 @@ public class SysSettingRepository : ISysSettingStore
             throw new KeyNotFoundException($"SysSetting with type { typeId } not found!");
         }
 
+        _schoolDbContext.Entry(sysSettingEntity).State = EntityState.Modified;
+        Console.WriteLine(_schoolDbContext.Entry(sysSettingEntity).State);
         await _schoolDbContext.SaveChangesAsync();
         return _mapper.Map<SysSetting>(sysSettingEntity);
     }
@@ -70,7 +73,7 @@ public class SysSettingRepository : ISysSettingStore
         }
         else if (sysSettingEntity.SysSettingTypeId == BaseConstant.SysSettingType.DateTime)
         {
-            return sysSettingEntity.DateTimeValue.ToString("yyyy-MM-dd");
+            return HelperMethods.ConvertTimeFromUtc(sysSettingEntity.DateTimeValue);
         }
         else if (sysSettingEntity.SysSettingTypeId == BaseConstant.SysSettingType.Guid)
         {

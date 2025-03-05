@@ -25,7 +25,7 @@ public class GradeBookRepository : IGradeBookStore
 
     public async Task<GradeBook?> GetByCriteria(Guid studentId, Guid lessonId, DateTime date)
     {
-        var gradeBook = await _context.GradeBooks.FirstOrDefaultAsync(g => g.LessonId == lessonId && g.Date == date && !g.IsDeleted);
+        var gradeBook = await _context.GradeBooks.FirstOrDefaultAsync(g => g.LessonId == lessonId && g.StudentId == studentId && g.Date == date && !g.IsDeleted);
         return _mapper.Map<GradeBook>(gradeBook);
     }
 

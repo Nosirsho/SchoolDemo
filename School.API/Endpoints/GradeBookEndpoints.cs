@@ -79,11 +79,18 @@ public static class GradeBookEndpoints
     }
 
     private static async Task<IResult> DeleteCurrentDayGradeBook(
-        [FromRoute] Guid id,
+        [FromBody] Guid id,
         GradeBookService servise
         )
     {
-        await servise.Delete(id);
-        return Results.Ok(new ApiResponse<Guid>(id, 1, "Grade book deleted"));
+        try
+        {
+            await servise.Delete(id);
+            return Results.Ok(new ApiResponse<Guid>(id, 1, "Grade book deleted"));
+        }
+        catch (Exception e)
+        {
+            return Results.Ok(new ApiResponse<object>(0, e.Message));
+        }
     }
 }

@@ -5,6 +5,7 @@ using School.API.Validations.SysSetting;
 using School.Application.Services;
 using School.Core.Constants;
 using School.Core.Enums;
+using School.Core.Helper;
 using School.Core.Model;
 
 namespace School.API.Endpoints;
@@ -102,7 +103,7 @@ public static class SysSettingEndpoints
         try
         {
             var sysSettings = await service.GetSysSettingList();
-            var sysSettingList = sysSettings.Select(sysSetting => new GetSysSettingListResponse(sysSetting.Id, sysSetting.Name, sysSetting.Code, sysSetting.Type.Name, sysSetting.Type.Id, (int)BaseConstant.GetById(sysSetting.Type.Id), sysSetting.IntegerValue, sysSetting.DateTimeValue.ToString("yyyy-MM-dd"), sysSetting.BooleanValue, sysSetting.StringValue, sysSetting.GuidValue));
+            var sysSettingList = sysSettings.Select(sysSetting => new GetSysSettingListResponse(sysSetting.Id, sysSetting.Name, sysSetting.Code, sysSetting.Type.Name, sysSetting.Type.Id, (int)BaseConstant.GetById(sysSetting.Type.Id), sysSetting.IntegerValue, HelperMethods.ConvertTimeFromUtc(sysSetting.DateTimeValue), sysSetting.BooleanValue, sysSetting.StringValue, sysSetting.GuidValue));
             var result = new ApiResponse<IEnumerable<GetSysSettingListResponse>>(sysSettingList);
             return Results.Ok(result);
         }
