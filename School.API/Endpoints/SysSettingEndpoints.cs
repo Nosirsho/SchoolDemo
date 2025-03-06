@@ -121,7 +121,7 @@ public static class SysSettingEndpoints
             var sysSetting = await service.GetSysSettingById(id);
             var result = new GetSysSettingListResponse(sysSetting.Id, sysSetting.Name, sysSetting.Code, 
                 sysSetting.Type.Name, sysSetting.Type.Id, (int)BaseConstant.GetById(sysSetting.Type.Id),
-                sysSetting.IntegerValue, sysSetting.DateTimeValue.ToString("yyyy-MM-dd"), sysSetting.BooleanValue, sysSetting.StringValue, sysSetting.GuidValue);
+                sysSetting.IntegerValue, HelperMethods.ConvertTimeFromUtc(sysSetting.DateTimeValue), sysSetting.BooleanValue, sysSetting.StringValue, sysSetting.GuidValue);
             return Results.Ok( new ApiResponse<GetSysSettingListResponse>(result));
         }
         catch (Exception e)
