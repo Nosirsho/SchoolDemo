@@ -11,11 +11,5 @@ public class StudentConfiguration : IEntityTypeConfiguration<StudentEntity>
     {
         builder.HasKey(x => x.Id);
         builder.ToTable("Students");
-
-        builder
-            .HasMany(s => s.Parents)
-            .WithOne(s => s.Student)
-            .HasForeignKey(s => s.StudentId);
-
     }
 }

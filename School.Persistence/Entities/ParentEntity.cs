@@ -10,6 +10,5 @@ public class ParentEntity
     public string MiddleName { get; set; } = string.Empty;
     public Sex Sex { get; set; }
     public string? Phone { get; set; } = string.Empty;
-    public StudentEntity ? Student { get; set; } = null;
-    public Guid StudentId { get; set; }
+    public List<StudentEntity>? Students { get; set; } = [];
 }

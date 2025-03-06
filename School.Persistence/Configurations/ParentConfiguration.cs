@@ -11,9 +11,8 @@ public class ParentConfiguration : IEntityTypeConfiguration<ParentEntity>
         builder.HasKey(x => x.Id);
         builder.ToTable("Parents");
 
-        builder.HasOne(s => s.Student)
-            .WithMany(s => s.Parents)
-            .HasForeignKey(s => s.StudentId);
-
+        builder.HasMany(s => s.Students)
+            .WithMany(p => p.Parents)
+            .UsingEntity(j=>j.ToTable("StudentParents"));
     }
 }

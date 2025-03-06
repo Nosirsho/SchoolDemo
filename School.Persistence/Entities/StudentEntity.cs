@@ -14,6 +14,6 @@ public class StudentEntity
     public Guid? GradeLevelId { get; set; }
     public GradeLevelEntity? GradeLevel { get; set; }
     
-    public IEnumerable<ParentEntity>? Parents { get; set; } = [];
+    public List<ParentEntity>? Parents { get; set; } = [];
     public bool IsDeleted { get; set; }
 }
