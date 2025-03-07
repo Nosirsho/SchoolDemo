@@ -11,11 +11,11 @@ public static class ParentsEndpoints
     public static IEndpointRouteBuilder MapParentsEndpoint(this IEndpointRouteBuilder app)
     {
         var endpoints = app.MapGroup("parents");
-        endpoints.MapGet("/{id:guid}", GetPaerentById);
-        endpoints.MapPost(string.Empty, CreateParent);
-        endpoints.MapPut("/{id:guid}", UpdateParent);
+        //endpoints.MapGet("/{id:guid}", GetPaerentById);
+        //endpoints.MapPost(string.Empty, CreateParent);
+        //endpoints.MapPut("/{id:guid}", UpdateParent);
         endpoints.MapGet(string.Empty, GetParents);
-        
+        //endpoints.MapPost("/", UpdateParent);
         return endpoints;
     }
 
@@ -36,10 +36,9 @@ public static class ParentsEndpoints
             request.MiddleName,
             request.LastName,
             request.Sex,
-            request.StudentId,
             request.Phone
             );
-        var curParent  = await service.Create(parent);
+        var curParent  = await service.AddParentWithStudent(parent, request.StudentId);
         string fullName = string.Format("{0} {1}. {2}.",curParent.LastName, curParent.FirstName[0], curParent.MiddleName[0]);
         var result = new GetParentResponse(curParent.Id, fullName, ((int)curParent.Sex).ToString(), curParent.Phone);
         return Results.Ok( new ApiResponse<GetParentResponse>(result));
@@ -89,7 +88,6 @@ public static class ParentsEndpoints
             request.MiddleName,
             request.LastName,
             request.Sex,
-            request.StudentId,
             request.Phone
         );
         var curParent = await service.Update(parent);

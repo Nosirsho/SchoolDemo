@@ -8,4 +8,6 @@ public interface IParentStore
     public Task<IReadOnlyList<Parent>> GetAll();
     public Task<Parent> Update(Parent parent);
     Task<Parent> Add(Parent parent);
+    Task<Parent> AddWithStudent(Parent parent, Guid studentId);
+    
 }

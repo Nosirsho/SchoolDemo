@@ -31,4 +31,9 @@ public class ParentService
     {
         return await _parentStore.Add(parent);
     }
+
+    public async Task<Parent> AddParentWithStudent(Parent parent, Guid studentId)
+    {
+        return await _parentStore.AddWithStudent(parent, studentId);
+    }
 }

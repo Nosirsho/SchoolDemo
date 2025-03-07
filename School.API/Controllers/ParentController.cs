@@ -69,7 +69,6 @@ public class ParentController : ControllerBase
             request.MiddleName, 
             request.LastName, 
             request.Sex, 
-            request.StudentId, 
             request.Phone
             );
         var curParent = await _parentService.Update(parent);

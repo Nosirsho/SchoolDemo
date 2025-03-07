@@ -1,4 +1,5 @@
-﻿using School.Core.Enums;
+﻿using System.Security.AccessControl;
+using School.Core.Enums;
 
 namespace School.Core.Model;
 
@@ -34,7 +35,7 @@ public class Student
     public Guid? GradeLevelId { get; set; }
     public GradeLevel? GradeLevel { get; set; }
     
-    public IEnumerable<Parent>? Parents { get; set; } = [];
+    public List<Parent>? Parents { get; set; } = [];
     public bool IsDeleted { get; set; }
 
     public static Student Create(string firstName, string lastName, string middleName, DateTime birthDate, Sex sex, Guid gradeLevelId)
