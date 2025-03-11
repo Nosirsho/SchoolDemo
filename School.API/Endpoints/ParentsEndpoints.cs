@@ -11,9 +11,9 @@ public static class ParentsEndpoints
     public static IEndpointRouteBuilder MapParentsEndpoint(this IEndpointRouteBuilder app)
     {
         var endpoints = app.MapGroup("parents");
-        //endpoints.MapGet("/{id:guid}", GetPaerentById);
-        //endpoints.MapPost(string.Empty, CreateParent);
-        //endpoints.MapPut("/{id:guid}", UpdateParent);
+        endpoints.MapGet("/{id:guid}", GetPaerentById);
+        endpoints.MapPost(string.Empty, CreateParent);
+        endpoints.MapPut("/{id:guid}", UpdateParent);
         endpoints.MapGet(string.Empty, GetParents);
         //endpoints.MapPost("/", UpdateParent);
         return endpoints;
@@ -55,9 +55,9 @@ public static class ParentsEndpoints
             return Results.Ok(new ApiResponse<object>(0, "Parent not found"));
         }
         string fullName = string.Format("{0} {1}. {2}.",parent.LastName, parent.FirstName[0], parent.MiddleName[0]);
-        var result = new GetParentResponse(parent.Id, fullName, ((int)parent.Sex).ToString(), parent.Phone);
+        var result = new GetParentByIdResponse(parent.Id, parent.FirstName, parent.LastName, parent.MiddleName, ((int)parent.Sex).ToString(), parent.Phone);
 
-        return Results.Ok(new ApiResponse<GetParentResponse>(result));
+        return Results.Ok(new ApiResponse<GetParentByIdResponse>(result));
     }
     
     private static async Task<IResult> UpdateParent(

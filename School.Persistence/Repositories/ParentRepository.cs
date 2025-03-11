@@ -18,7 +18,9 @@ public class ParentRepository : IParentStore
     }
     public async Task<Parent?> GetById(Guid id)
     {
-        var parentEntity = await _schoolDbContext.Parents.FindAsync(id);
+        var parentEntity = await _schoolDbContext.Parents
+            .Include(p=>p.Students)
+            .Where(p=> p.Id == id).FirstOrDefaultAsync();
         return _mapper.Map<Parent>(parentEntity);
     }
 
