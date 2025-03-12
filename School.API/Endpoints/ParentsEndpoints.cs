@@ -12,6 +12,7 @@ public static class ParentsEndpoints
     {
         var endpoints = app.MapGroup("parents");
         endpoints.MapGet("/{id:guid}", GetPaerentById);
+        endpoints.MapGet("/bind/{id:guid}", GetPaerentWhithStudents);
         endpoints.MapPost(string.Empty, CreateParent);
         endpoints.MapPut("/{id:guid}", UpdateParent);
         endpoints.MapGet(string.Empty, GetParents);
@@ -54,10 +55,30 @@ public static class ParentsEndpoints
         {
             return Results.Ok(new ApiResponse<object>(0, "Parent not found"));
         }
-        string fullName = string.Format("{0} {1}. {2}.",parent.LastName, parent.FirstName[0], parent.MiddleName[0]);
         var result = new GetParentByIdResponse(parent.Id, parent.FirstName, parent.LastName, parent.MiddleName, ((int)parent.Sex).ToString(), parent.Phone);
 
         return Results.Ok(new ApiResponse<GetParentByIdResponse>(result));
+    }
+    
+    private static async Task<IResult> GetPaerentWhithStudents(
+        [FromRoute] Guid id,
+        ParentService service
+    )
+    {
+        var parent = await service.GetById(id);
+        if (parent == null)
+        {
+            return Results.Ok(new ApiResponse<object>(0, "Parent not found"));
+        }
+        var fullName = $"{parent.LastName} {parent.FirstName} {parent.MiddleName}";
+
+        var parentResp =  new GetParentWithStudentResponse(parent.Id, fullName,[]);
+        foreach (var child in parent.Students)
+        {
+            var childFullName = $"{child.LastName} {child.FirstName} {child.MiddleName}";
+            parentResp.Children.Add( new Child(child.Id, childFullName));
+        }
+        return Results.Ok(new ApiResponse<GetParentWithStudentResponse>(parentResp));
     }
     
     private static async Task<IResult> UpdateParent(
