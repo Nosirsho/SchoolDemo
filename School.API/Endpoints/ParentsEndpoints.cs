@@ -14,6 +14,7 @@ public static class ParentsEndpoints
         endpoints.MapGet("/{id:guid}", GetPaerentById);
         endpoints.MapGet("/bind/{id:guid}", GetPaerentWhithStudents);
         endpoints.MapPost(string.Empty, CreateParent);
+        endpoints.MapPost("bind/{id:guid}", BindParentStudents);
         endpoints.MapPut("/{id:guid}", UpdateParent);
         endpoints.MapGet(string.Empty, GetParents);
         //endpoints.MapPost("/", UpdateParent);
@@ -40,7 +41,7 @@ public static class ParentsEndpoints
             request.Phone
             );
         var curParent  = await service.AddParentWithStudent(parent, request.StudentId);
-        string fullName = string.Format("{0} {1}. {2}.",curParent.LastName, curParent.FirstName[0], curParent.MiddleName[0]);
+        var fullName = string.Format("{0} {1}. {2}.",curParent.LastName, curParent.FirstName[0], curParent.MiddleName[0]);
         var result = new GetParentResponse(curParent.Id, fullName, ((int)curParent.Sex).ToString(), curParent.Phone);
         return Results.Ok( new ApiResponse<GetParentResponse>(result));
     }
@@ -112,7 +113,7 @@ public static class ParentsEndpoints
             request.Phone
         );
         var curParent = await service.Update(parent);
-        string fullName = string.Format("{0} {1}. {2}.",curParent.LastName, curParent.FirstName[0], curParent.MiddleName[0]);
+        var fullName = $"{curParent.LastName} {curParent.FirstName[0]}. {curParent.MiddleName[0]}.";
         var result = new GetParentResponse(parent.Id, fullName, ((int)curParent.Sex).ToString(), curParent.Phone);
         return Results.Ok( new ApiResponse<GetParentResponse>(result));
     }
@@ -128,5 +129,15 @@ public static class ParentsEndpoints
                 gl.Phone)
         );
         return Results.Ok(new ApiResponse<IEnumerable<GetParentResponse>>(result));
+    }
+
+    private static async Task<IResult> BindParentStudents(
+        [FromRoute] Guid id,
+        [FromBody] List<Guid> studentIds,
+        ParentService service
+        )
+    {
+        await service.BindingParentStudents(id,studentIds);
+        return Results.Ok(new ApiResponse<object>("",1, "All students binding"));
     }
 }

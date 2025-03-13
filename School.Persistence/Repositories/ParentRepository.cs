@@ -56,18 +56,39 @@ public class ParentRepository : IParentStore
     {
         var parentEntity = _mapper.Map<ParentEntity>(parent);
         await _schoolDbContext.Parents.AddAsync(parentEntity);
-        await AddStudentToparent(parentEntity.Id, studentId);
+        await AddStudentToParent(parentEntity.Id, studentId);
         await _schoolDbContext.SaveChangesAsync();
         return _mapper.Map<Parent>(parentEntity);
     }
 
-    private async Task<ParentEntity> AddStudentToparent(Guid parentId, Guid studentId)
+    public async Task BindParentStudents(Guid parentId, List<Guid> students)
+    {
+        await using var transaction = await _schoolDbContext.Database.BeginTransactionAsync();
+        try
+        {
+            var parent = await _schoolDbContext.Parents.FindAsync(parentId);
+            if (parent==null) throw new NullReferenceException("Parent not found");
+                
+            foreach (var item in students)
+            {
+                var student = await _schoolDbContext.Students.FindAsync(item);
+                if (student == null) throw new NullReferenceException($"Student not found by id {item}");
+                parent.Students?.Add(student);
+            }
+            await _schoolDbContext.SaveChangesAsync();
+            await transaction.CommitAsync();
+        } catch (Exception e) {
+            await transaction.RollbackAsync();
+            throw new Exception($"Failed to save schedules: {e.Message}");
+        }
+    }
+
+    private async Task AddStudentToParent(Guid parentId, Guid studentId)
     {
         var parent = await _schoolDbContext.Parents.FindAsync(parentId);
         var student = await _schoolDbContext.Students.FindAsync(studentId);
         if (parent==null) throw new NullReferenceException("Parent not found");
         if (student==null) throw new NullReferenceException("Student not found");
         parent.Students?.Add(student);
-        return parent;
     }
 }

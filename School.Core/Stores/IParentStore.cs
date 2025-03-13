@@ -9,5 +9,6 @@ public interface IParentStore
     public Task<Parent> Update(Parent parent);
     Task<Parent> Add(Parent parent);
     Task<Parent> AddWithStudent(Parent parent, Guid studentId);
+    Task BindParentStudents(Guid parentId, List<Guid> students);
     
 }

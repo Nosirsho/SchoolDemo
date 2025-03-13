@@ -36,4 +36,9 @@ public class ParentService
     {
         return await _parentStore.AddWithStudent(parent, studentId);
     }
+
+    public async Task BindingParentStudents(Guid parentId, List<Guid> students)
+    {
+        await _parentStore.BindParentStudents(parentId, students);
+    }
 }
