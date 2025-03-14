@@ -80,8 +80,15 @@ public class GradeBookService
         }
         await _gradeBookStore.Add(gradeBook);
     }
-    public async Task Delete(Guid gradeBookId)
+    public async Task<Guid> Delete(Guid studentId, Guid lessonId, DateTime date)
     {
-        await _gradeBookStore.Delete(gradeBookId);
+        var gradeBook =  await _gradeBookStore.GetByCriteria(studentId, lessonId, date.ToUniversalTime());
+        if (gradeBook != null)
+        {
+            await _gradeBookStore.Delete(gradeBook.Id);
+            return gradeBook.Id;
+        } else {
+            throw new Exception("Grade book not found for Delete");
+        }
     }
 }

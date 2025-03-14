@@ -117,7 +117,7 @@ public class ScheduleRepository : IScheduleStore
                 {
                     item.IsActive = true;
                     item.CreatedOn = DateTime.Now.ToUniversalTime();
-                    item.TeacherId = new Guid("bb748ca0-1b09-4d8b-ab5b-62177dad6a76");
+                    item.TeacherId = new Guid("1575786b-c1a9-4435-93d2-6de9c02622ad");
                     await _schoolDbContext.Schedules.AddAsync(item);
                 }
                 await _schoolDbContext.SaveChangesAsync();

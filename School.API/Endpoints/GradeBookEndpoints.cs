@@ -15,7 +15,7 @@ public static class GradeBookEndpoints
         endpoints.MapGet("/{start:datetime}/{end:datetime}", GetIntervalGradeBooks);
         endpoints.MapGet("/{lessonId:guid}/{start:datetime}/{end:datetime}", GetByLessonIntervalGradeBooks);
         endpoints.MapPost(string.Empty, CreateGradeBook);
-        app.MapDelete("/{id:guid}", DeleteCurrentDayGradeBook);
+        endpoints.MapDelete(string.Empty, DeleteCurrentDayGradeBook);
         
         return endpoints;
     }
@@ -64,7 +64,7 @@ public static class GradeBookEndpoints
                 new Guid(),
                 request.Date.ToUniversalTime(),
                 request.LessonId,
-                new Guid("bb748ca0-1b09-4d8b-ab5b-62177dad6a76"),
+                new Guid("1575786b-c1a9-4435-93d2-6de9c02622ad"),
                 request.StudentId,
                 request.Grade,
                 ""
@@ -79,14 +79,14 @@ public static class GradeBookEndpoints
     }
 
     private static async Task<IResult> DeleteCurrentDayGradeBook(
-        [FromBody] Guid id,
+        [FromBody] DeleteGradeBookRequest request,
         GradeBookService servise
         )
     {
         try
         {
-            await servise.Delete(id);
-            return Results.Ok(new ApiResponse<Guid>(id, 1, "Grade book deleted"));
+            var result =  await servise.Delete(request.StudentId, request.LessonId, request.Date);
+            return Results.Ok(new ApiResponse<Guid>(result, 1, "Grade book deleted"));
         }
         catch (Exception e)
         {

@@ -112,7 +112,7 @@ public class StudentController : ControllerBase
         var validateResult = await _createStudentValidator.ValidateAsync(request);
         if (!validateResult.IsValid)
         {
-            string errors = validateResult.Errors.Select(e => e.ErrorMessage).ToString();
+            var errors = string.Join(Environment.NewLine, validateResult.Errors.Select(e => e.ErrorMessage));
             _logger.LogInformation("ValidationError");
             return Ok(new ApiResponse<object>(0, errors));
         }
