@@ -28,6 +28,10 @@ try
     services.Configure<JwtOptions>(builder.Configuration.GetSection(nameof(JwtOptions)));
     services.Configure<AuthorizationOptions>(builder.Configuration.GetSection(nameof(AuthorizationOptions)));
     services.AddAutoMapper(typeof(DataBaseMappings));
+    services.AddHttpClient("SMS", o =>
+    {
+        o.BaseAddress = new Uri("https://api.osonsms.com/");
+    });
     //services.AddPersistence(configuration);
     services.AddApplication();
 

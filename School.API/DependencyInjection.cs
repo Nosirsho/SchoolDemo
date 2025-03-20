@@ -16,6 +16,7 @@ using School.API.Validations.Student;
 using School.API.Validations.SysSetting;
 using School.API.Validations.Teacher;
 using School.Application.Interfaces.Auth;
+using School.Application.Interfaces.Notification;
 using School.Application.Services;
 using School.Core.Stores;
 using School.Infrastructure;
@@ -40,6 +41,7 @@ public static class DependencyInjection
         services.AddScoped<PermissionService>();
         services.AddScoped<GradeBookService>();
         services.AddScoped<SysSettingService>();
+        services.AddScoped<NotificationService>();
         
         services.AddScoped<IStudentStore, StudentRepository>();
         services.AddScoped<IParentStore, ParentRepository>();
@@ -53,6 +55,7 @@ public static class DependencyInjection
         services.AddScoped<IPasswordHasher, PasswordHasher>();
         services.AddScoped<IGradeBookStore, GradeBookRepository>();
         services.AddScoped<ISysSettingStore, SysSettingRepository>();
+        services.AddScoped<INotification, SmsService>();
         
         services.AddScoped<IValidator<CreateStudentRequest>, CreateStudentValidator>();
         services.AddScoped<IValidator<UpdateStudentRequest>, UpdateStudentValidator>();
