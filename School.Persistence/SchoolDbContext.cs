@@ -43,6 +43,7 @@ public class SchoolDbContext: DbContext
         modelBuilder.ApplyConfiguration(new GradeBookConfiguration());
         modelBuilder.ApplyConfiguration(new SysSettingTypeConfiguration());
         modelBuilder.ApplyConfiguration(new SysSettingConfiguration());
+        modelBuilder.ApplyConfiguration(new NotificationLogConfiguration());
         base.OnModelCreating(modelBuilder);
     }
 
@@ -57,4 +58,6 @@ public class SchoolDbContext: DbContext
     public DbSet<GradeBookEntity> GradeBooks => Set<GradeBookEntity>();
     public DbSet<SysSettingTypeEntity> SysSettingType => Set<SysSettingTypeEntity>();
     public DbSet<SysSettingEntity> SysSettings => Set<SysSettingEntity>();
+    public DbSet<NotificationLogEntity> NotificationLogs => Set<NotificationLogEntity>();
+    
 }

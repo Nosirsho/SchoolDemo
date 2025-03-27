@@ -31,5 +31,7 @@ public class DataBaseMappings : Profile
         CreateMap<SysSettingTypeEntity, SysSettingType>().ReverseMap();
         CreateMap<ScheduleEntity, Schedule>();
         CreateMap<ScheduleEntity, Schedule>().ReverseMap();
+        CreateMap<NotificationLogEntity, NotificationLog>();
+        CreateMap<NotificationLogEntity, NotificationLog>().ReverseMap();
     }
 }

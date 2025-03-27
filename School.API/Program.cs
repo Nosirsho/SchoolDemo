@@ -3,6 +3,7 @@ using NLog.Web;
 using School.API;
 using School.API.Extensions;
 using School.Core.Enums;
+using School.Core.Model.SmsSender;
 using School.Infrastructure;
 using School.Persistence;
 using School.Persistence.Mappings;
@@ -25,9 +26,15 @@ try
     services.AddApiAuthentication(configuration);
     services.AddEndpointsApiExplorer();
     services.AddSwaggerGen();
+    services.Configure<NotificationSettings>(configuration.GetSection("NotificationSettings"));
     services.Configure<JwtOptions>(builder.Configuration.GetSection(nameof(JwtOptions)));
     services.Configure<AuthorizationOptions>(builder.Configuration.GetSection(nameof(AuthorizationOptions)));
     services.AddAutoMapper(typeof(DataBaseMappings));
+    services.AddHttpClient("SMS", o =>
+    {
+        o.BaseAddress = new Uri("https://api.osonsms.com/");
+    });
+    
     //services.AddPersistence(configuration);
     services.AddApplication();
 
