@@ -67,7 +67,7 @@ public class TeacherController : ControllerBase
             return BadRequest(validationResult.Errors);
         }
 
-        var teacher = new Teacher(
+        var teacher = Teacher.Create(
             request.FirstName, 
             request.MiddleName, 
             request.LastName,
@@ -94,7 +94,7 @@ public class TeacherController : ControllerBase
             return BadRequest(validationResult.Errors);
         }
         
-        var teacher = new Teacher(
+        var teacher = Teacher.Create(
             request.Id,
             request.FirstName, 
             request.MiddleName, 

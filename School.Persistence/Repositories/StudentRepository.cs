@@ -52,12 +52,12 @@ public class StudentRepository : IStudentStore
 
     public async Task<IReadOnlyList<Student>> GetByGrade(Guid gradeId)
     {
-        return _mapper.Map<IReadOnlyList<Student>>( _schoolDbContext.Students.Where(s=>s.GradeLevelId == gradeId && !s.IsDeleted).ToList());
+        return _mapper.Map<IReadOnlyList<Student>>( await _schoolDbContext.Students.Where(s=>s.GradeLevelId == gradeId && !s.IsDeleted).ToListAsync());
     }
 
     public async Task<Student> Update(Student student)
     {
-        var curStudent = await GetById(student.Id);
+        var curStudent = await _schoolDbContext.Students.FindAsync(student.Id);
         if (curStudent == null) throw new Exception("Student not found " + student.Id);
         curStudent.FirstName = student.FirstName;
         curStudent.LastName = student.LastName;
@@ -67,7 +67,7 @@ public class StudentRepository : IStudentStore
         curStudent.Sex = student.Sex;
 
         await _schoolDbContext.SaveChangesAsync();
-        return curStudent;
+        return _mapper.Map<Student>(curStudent);
     }
 
     public async Task Add(Student student)
@@ -80,7 +80,8 @@ public class StudentRepository : IStudentStore
 
     public async Task<Guid> Delete(Guid id)
     {
-        var student = await GetById(id);
+        var student = await _schoolDbContext.Students.FindAsync(id);
+        if (student == null) throw new Exception("Student not found " + id);
         student.IsDeleted = true;
         await _schoolDbContext.SaveChangesAsync();
         return id;

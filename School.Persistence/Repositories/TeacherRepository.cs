@@ -32,31 +32,36 @@ public class TeacherRepository : ITeacherStore
 
     public async Task<Teacher> Update(Teacher teacher)
     {
-        var curTeacher = await GetById(teacher.Id);
-        
+        var curTeacher = await _schoolDbContext.Teachers.FindAsync(teacher.Id);
+        if (curTeacher==null) throw new NullReferenceException("Parent not found");
         curTeacher.FirstName = teacher.FirstName;
         curTeacher.MiddleName = teacher.MiddleName;
         curTeacher.LastName = teacher.LastName;
         curTeacher.BirthDate = teacher.BirthDate.ToUniversalTime();
         curTeacher.Phone = teacher.Phone;
         curTeacher.Sex = teacher.Sex;
-        
         await _schoolDbContext.SaveChangesAsync();
-        return curTeacher;
+        var result = _mapper.Map<Teacher>(curTeacher); 
+        return result;
     }
 
-    public async Task Add(Teacher teacher)
+    public async Task<Teacher> Add(Teacher teacher)
     {
         var teacerEntity = _mapper.Map<TeacherEntity>(teacher);
         teacerEntity.BirthDate = teacerEntity.BirthDate.ToUniversalTime();
         await _schoolDbContext.Teachers.AddAsync(teacerEntity);
         await _schoolDbContext.SaveChangesAsync();
+        return teacher;
     }
 
     public async Task<Guid> Delete(Guid id)
     {
-        var teacher = await GetById(id);
-        teacher.IsDeleted = true;
+        var teacherEntity = await _schoolDbContext.Teachers.FirstOrDefaultAsync(t => t.Id == id && !t.IsDeleted);
+        if (teacherEntity == null)
+        {
+            throw new NullReferenceException($"Teacher not found with id {id}");
+        }
+        teacherEntity.IsDeleted = true;
         await _schoolDbContext.SaveChangesAsync();
         return id;
     }

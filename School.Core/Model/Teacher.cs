@@ -4,7 +4,7 @@ namespace School.Core.Model;
 
 public class Teacher
 {
-    public Teacher(string firstName, string middleName, string lastName, string phone, DateTime birthDate, Sex sex)
+    private Teacher(string firstName, string middleName, string lastName, string phone, DateTime birthDate, Sex sex)
     {
         Id = Guid.NewGuid();
         FirstName = firstName;
@@ -15,7 +15,7 @@ public class Teacher
         Sex = sex;
     }
     
-    public Teacher(Guid id, string firstName, string middleName, string lastName, string phone, DateTime birthDate, Sex sex)
+    private Teacher(Guid id, string firstName, string middleName, string lastName, string phone, DateTime birthDate, Sex sex)
     {
         Id = id;
         FirstName = firstName;
@@ -40,4 +40,14 @@ public class Teacher
     public Guid? GradeLevelId { get; set; }
 
     public IEnumerable<Schedule> Schedules { get; set; }
+    
+    public static Teacher Create(string firstName, string middleName, string lastName, string phone, DateTime birthDate, Sex sex)
+    {
+        return new Teacher(firstName, middleName, lastName, phone, birthDate, sex);
+    }
+    
+    public static Teacher Create(Guid id, string firstName, string middleName, string lastName, string phone, DateTime birthDate, Sex sex)
+    {
+        return new Teacher(id, firstName, middleName, lastName, phone, birthDate, sex);
+    }
 }

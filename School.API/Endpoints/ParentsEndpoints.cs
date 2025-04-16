@@ -11,8 +11,8 @@ public static class ParentsEndpoints
     public static IEndpointRouteBuilder MapParentsEndpoint(this IEndpointRouteBuilder app)
     {
         var endpoints = app.MapGroup("parents");
-        endpoints.MapGet("/{id:guid}", GetPaerentById);
-        endpoints.MapGet("/bind/{id:guid}", GetPaerentWhithStudents);
+        endpoints.MapGet("/{id:guid}", GetParentById);
+        endpoints.MapGet("/bind/{id:guid}", GetParentWithStudents);
         endpoints.MapPost(string.Empty, CreateParent);
         endpoints.MapPost("bind/{id:guid}", BindParentStudents);
         endpoints.MapPut("/{id:guid}", UpdateParent);
@@ -46,7 +46,7 @@ public static class ParentsEndpoints
         return Results.Ok( new ApiResponse<GetParentResponse>(result));
     }
 
-    private static async Task<IResult> GetPaerentById(
+    private static async Task<IResult> GetParentById(
         [FromRoute] Guid id,
         ParentService service
         )
@@ -61,7 +61,7 @@ public static class ParentsEndpoints
         return Results.Ok(new ApiResponse<GetParentByIdResponse>(result));
     }
     
-    private static async Task<IResult> GetPaerentWhithStudents(
+    private static async Task<IResult> GetParentWithStudents(
         [FromRoute] Guid id,
         ParentService service
     )

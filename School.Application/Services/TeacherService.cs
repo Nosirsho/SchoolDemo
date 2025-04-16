@@ -27,9 +27,9 @@ public class TeacherService
         return await _teacherStore.Update(teacher);
     }
 
-    public async Task Create(Teacher teacher)
+    public async Task<Teacher> Create(Teacher teacher)
     {
-        await _teacherStore.Add(teacher);
+        return await _teacherStore.Add(teacher);
     }
 
     public async Task<Guid> Delete(Guid id)

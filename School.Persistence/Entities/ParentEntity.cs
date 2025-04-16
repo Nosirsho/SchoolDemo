@@ -4,6 +4,7 @@ namespace School.Persistence.Entities;
 
 public class ParentEntity
 {
+    public DateTime BirthDate;
     public Guid Id { get; set; }
     public string FirstName { get; set; } = string.Empty;
     public string LastName { get; set; } = string.Empty;

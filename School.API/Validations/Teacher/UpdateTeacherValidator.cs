@@ -11,7 +11,7 @@ public class UpdateTeacherValidator : AbstractValidator<UpdateTeacherRequest>
         RuleFor(t => t.FirstName).NotNull().NotEmpty().Length(3,50);
         RuleFor(t => t.MiddleName).NotNull().NotEmpty().Length(3,50);
         RuleFor(t => t.LastName).NotNull().NotEmpty().Length(3,50);
-        RuleFor(t => t.BirthDate).GreaterThanOrEqualTo(DateTime.Now.AddYears(-18));
+        //RuleFor(t => t.BirthDate).GreaterThanOrEqualTo(DateTime.Now.AddYears(-18));
         RuleFor(t => t.Sex).NotEmpty().NotNull();
     }
 }
