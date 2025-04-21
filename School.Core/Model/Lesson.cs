@@ -15,6 +15,8 @@ public class Lesson
     public Guid Id { get; set; }
     public string Name { get; set; }
     public Schedule? Schedule { get; set; }
+    public bool IsDeleted { get; set; }
+    public DateTime? DeletedAt { get; set; }
 
     public static Lesson Create(string name)
     {

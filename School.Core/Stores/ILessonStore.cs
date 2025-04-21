@@ -4,8 +4,9 @@ namespace School.Core.Stores;
 
 public interface ILessonStore
 {
-    public Task<Lesson?> GetById(Guid id);
-    public Task<IReadOnlyList<Lesson>> GetAll();
-    public Task<Lesson> Update(Lesson lesson);
-    Task Add(Lesson lesson);
+    Task<Lesson?> GetById(Guid id);
+    Task<IReadOnlyList<Lesson>> GetAll();
+    Task<Lesson> Update(Lesson lesson);
+    Task<Lesson> Add(Lesson lesson);
+    Task<Guid> Delete(Guid id);
 }

@@ -18,13 +18,13 @@ public class GradeLevelRepository : IGradeLevelStore
     }
     public async Task<GradeLevel?> GetById(Guid id)
     {
-        var entity = await _schoolDbContext.GradeLevels.FindAsync(id);
+        var entity = await _schoolDbContext.GradeLevels.Where(gl=>gl.Id==id && !gl.IsDeleted).FirstOrDefaultAsync();
         return _mapper.Map<GradeLevel>(entity);
     }
 
     public async Task<IReadOnlyList<GradeLevel>> GetAll()
     {
-        var response =await _schoolDbContext.GradeLevels.ToListAsync();
+        var response = await _schoolDbContext.GradeLevels.Where(gl=>!gl.IsDeleted).ToListAsync();
         return _mapper.Map<List<GradeLevel>>(response) ;
     }
 
@@ -35,15 +35,25 @@ public class GradeLevelRepository : IGradeLevelStore
         
         curGradeLevel.Id = gradeLevel.Id;
         curGradeLevel.Name = gradeLevel.Name;
-        curGradeLevel.EntryYear = gradeLevel.EntryYear;
+        curGradeLevel.EntryYear = gradeLevel.EntryYear?.ToUniversalTime();
         await _schoolDbContext.SaveChangesAsync();
         return _mapper.Map<GradeLevel>(curGradeLevel);
     }
 
-    public async Task Add(GradeLevel gradeLevel)
+    public async Task<GradeLevel> Add(GradeLevel gradeLevel)
     {
-        var gradeLevelEmtity = _mapper.Map<GradeLevelEntity>(gradeLevel);
-        await _schoolDbContext.GradeLevels.AddAsync(gradeLevelEmtity);
+        gradeLevel.EntryYear = gradeLevel.EntryYear?.ToUniversalTime();
+        var gradeLevelEntity = _mapper.Map<GradeLevelEntity>(gradeLevel);
+        await _schoolDbContext.GradeLevels.AddAsync(gradeLevelEntity);
         await _schoolDbContext.SaveChangesAsync();
+        return _mapper.Map<GradeLevel>(gradeLevelEntity);
+    }
+    public async Task<Guid> Delete(Guid id)
+    {
+        var curGradeLevel = await _schoolDbContext.GradeLevels.FindAsync(id);
+        if (curGradeLevel==null) throw new NullReferenceException("GradeLevel not found");
+        curGradeLevel.IsDeleted = true;
+        await _schoolDbContext.SaveChangesAsync();
+        return id;
     }
 }

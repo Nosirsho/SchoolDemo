@@ -66,6 +66,7 @@ public static class DependencyInjection
         services.AddScoped<IValidator<UpdateParentRequest>, UpdateParentValidator>();
         services.AddScoped<IValidator<CreateGradeLevelRequest>, CreateGradeLevelValidator>();
         services.AddScoped<IValidator<UpdateGradeLevelRequest>, UpdateGradeLevelValidator>();
+        services.AddScoped<IValidator<UpdateGradeLevelWithYearRequest>, UpdateGradeLevelWithYearValidator>();
         services.AddScoped<IValidator<CreateLessonRequest>, CreateLessonValidator>();
         services.AddScoped<IValidator<UpdateLessonRequest>, UpdateLessonValidator>();
         services.AddScoped<IValidator<CreateScheduleRequest>, CreateScheduleValidator>();

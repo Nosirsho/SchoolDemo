@@ -27,8 +27,13 @@ public class LessonService
         return await _lessonStore.Update(lesson);
     }
 
-    public async Task Create(Lesson lesson)
+    public async Task<Lesson> Create(Lesson lesson)
     {
-        await _lessonStore.Add(lesson);
+        return await _lessonStore.Add(lesson);
+    }
+
+    public async Task<Guid> Delete(Guid lessonId)
+    {
+        return await _lessonStore.Delete(lessonId);
     }
 }

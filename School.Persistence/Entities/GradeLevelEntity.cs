@@ -8,4 +8,6 @@ public class GradeLevelEntity
     public List<StudentEntity>? Students { get; set; }
     public TeacherEntity? Teacher { get; set; }
     public ScheduleEntity? Schedule { get; set; }
+    public bool IsDeleted { get; set; } = false;
+    public DateTime? DeletedAt { get; set; }
 }

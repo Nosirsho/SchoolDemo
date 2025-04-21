@@ -4,8 +4,9 @@ namespace School.Core.Stores;
 
 public interface IGradeLevelStore
 {
-    public Task<GradeLevel?> GetById(Guid id);
-    public Task<IReadOnlyList<GradeLevel>> GetAll();
-    public Task<GradeLevel> Update(GradeLevel gradeLevel);
-    Task Add(GradeLevel gradeLevel);
+    Task<GradeLevel?> GetById(Guid id);
+    Task<IReadOnlyList<GradeLevel>> GetAll();
+    Task<GradeLevel> Update(GradeLevel gradeLevel);
+    Task<GradeLevel> Add(GradeLevel gradeLevel);
+    Task<Guid> Delete(Guid id);
 }

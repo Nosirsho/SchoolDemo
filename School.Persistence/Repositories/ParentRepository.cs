@@ -66,13 +66,14 @@ public class ParentRepository : IParentStore
         await using var transaction = await _schoolDbContext.Database.BeginTransactionAsync();
         try
         {
-            var parent = await _schoolDbContext.Parents.FindAsync(parentId);
+            var parent = await _schoolDbContext.Parents.Include(p=>p.Students).Where(p=>p.Id == parentId).FirstOrDefaultAsync();
             if (parent==null) throw new NullReferenceException("Parent not found");
                 
             foreach (var item in students)
             {
                 var student = await _schoolDbContext.Students.FindAsync(item);
                 if (student == null) throw new NullReferenceException($"Student not found by id {item}");
+                if (parent.Students.Contains(student)) continue;
                 parent.Students?.Add(student);
             }
             await _schoolDbContext.SaveChangesAsync();

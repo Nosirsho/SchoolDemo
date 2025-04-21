@@ -16,6 +16,9 @@ public static class GradeLevelEndpoints
         endpoints.MapPost(string.Empty, CreateGradeLevel);
         endpoints.MapPut("/{id:guid}", UpdateGradeLevel);
         endpoints.MapGet(string.Empty, GetGradeLevels);
+        endpoints.MapGet("year", GetGradeLevelsWithYear);
+        endpoints.MapGet("year/{id:guid}", GetGradeLevelsWithYearById);
+        endpoints.MapDelete("{id:guid}", DeleteGradeLevel);
         
         return endpoints;
     }
@@ -49,17 +52,19 @@ public static class GradeLevelEndpoints
         }
 
         var gradeLevel = GradeLevel.Create(
-            request.Name
+            Guid.NewGuid(),
+            request.Name,
+            request.Year
         );
-        await service.Create(gradeLevel);
-        var response = new GetGradeLevelResponse(gradeLevel.Id, gradeLevel.Name);
-        return Results.Ok( new ApiResponse<GetGradeLevelResponse>(response));
+        var curGradeLevel =  await service.Create(gradeLevel);
+        var response = new GetGradeLevelWithEntryYearResponse(curGradeLevel.Id, curGradeLevel.Name, HelperService.ConvertTimeFromUtc(curGradeLevel?.EntryYear, "yyyy"));
+        return Results.Ok( new ApiResponse<GetGradeLevelWithEntryYearResponse>(response));
     }
 
     private static async Task<IResult> UpdateGradeLevel(
         [FromRoute] Guid id,
-        [FromBody] UpdateGradeLevelRequest request,
-        IValidator<UpdateGradeLevelRequest> validator,
+        [FromBody] UpdateGradeLevelWithYearRequest request,
+        IValidator<UpdateGradeLevelWithYearRequest> validator,
         GradeLevelService service
         )
     {
@@ -81,11 +86,11 @@ public static class GradeLevelEndpoints
         var gradeLevel = GradeLevel.Create(
             request.Id,
             request.Name,
-            request.EntryDate
+            request.Year
         );
         var curGradeLevel = await service.Update(gradeLevel);
-        var response = new GetGradeLevelResponse(curGradeLevel.Id, curGradeLevel.Name);
-        return Results.Ok( new ApiResponse<GetGradeLevelResponse>(response));
+        var response = new GetGradeLevelWithEntryYearResponse(curGradeLevel.Id, curGradeLevel.Name, HelperService.ConvertTimeFromUtc(curGradeLevel?.EntryYear, "yyyy"));
+        return Results.Ok( new ApiResponse<GetGradeLevelWithEntryYearResponse>(response));
     }
 
     private static async Task<IResult> GetGradeLevels(
@@ -95,5 +100,40 @@ public static class GradeLevelEndpoints
         var gradeLevels = await service.GetAll();
         var result = gradeLevels.Select(gl=>  new GetGradeLevelResponse(gl.Id, gl.Name));
         return Results.Ok(new ApiResponse<IEnumerable<GetGradeLevelResponse>>(result));
+    }
+    
+    private static async Task<IResult> GetGradeLevelsWithYearById(
+        [FromRoute] Guid id,
+        GradeLevelService service
+    )
+    {
+        var gradeLevel = await service.GetById(id);
+        var result = new GetGradeLevelWithEntryYearResponse(gradeLevel.Id, gradeLevel.Name, HelperService.ConvertTimeFromUtc(gradeLevel.EntryYear, "yyyy"));
+        return Results.Ok(new ApiResponse<GetGradeLevelWithEntryYearResponse>(result));
+    }
+    
+    private static async Task<IResult> GetGradeLevelsWithYear(
+        GradeLevelService service
+    )
+    {
+        var gradeLevels = await service.GetAll();
+        var result = gradeLevels.Select(gl=>  new GetGradeLevelWithEntryYearResponse(gl.Id, gl.Name, HelperService.ConvertTimeFromUtc(gl.EntryYear, "yyyy")));
+        return Results.Ok(new ApiResponse<IEnumerable<GetGradeLevelWithEntryYearResponse>>(result));
+    }
+
+    private static async Task<IResult> DeleteGradeLevel(
+        [FromRoute] Guid id,
+        GradeLevelService service
+        )
+    {
+        try
+        {
+            var result =  await service.Delete(id);
+            return Results.Ok(new ApiResponse<Guid>(result, 1, "Grade level deleted"));
+        }
+        catch (Exception e)
+        {
+            return Results.Ok(new ApiResponse<object>(0, e.Message));
+        }
     }
 }

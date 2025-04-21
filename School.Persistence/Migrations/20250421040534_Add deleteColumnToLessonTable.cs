@@ -1,27 +1,27 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace School.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class AddColumnToGradeLevelsTable : Migration
+    public partial class AdddeleteColumnToLessonTable : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<DateTime>(
                 name: "DeletedAt",
-                table: "GradeLevels",
+                table: "Lessons",
                 type: "timestamp with time zone",
-                nullable: true
-            );
+                nullable: true);
 
             migrationBuilder.AddColumn<bool>(
                 name: "IsDeleted",
-                table: "GradeLevels",
+                table: "Lessons",
                 type: "boolean",
-                nullable: true,
+                nullable: false,
                 defaultValue: false);
         }
 
@@ -30,11 +30,11 @@ namespace School.Persistence.Migrations
         {
             migrationBuilder.DropColumn(
                 name: "DeletedAt",
-                table: "GradeLevels");
+                table: "Lessons");
 
             migrationBuilder.DropColumn(
                 name: "IsDeleted",
-                table: "GradeLevels");
+                table: "Lessons");
         }
     }
 }

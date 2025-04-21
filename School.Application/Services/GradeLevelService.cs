@@ -27,9 +27,14 @@ public class GradeLevelService
         return await _gradeLevelStore.Update(gradeLevel);
     }
 
-    public async Task Create(GradeLevel gradeLevel)
+    public async Task<GradeLevel> Create(GradeLevel gradeLevel)
     {
-        await _gradeLevelStore.Add(gradeLevel);
+        return await _gradeLevelStore.Add(gradeLevel);
+    }
+    
+    public async Task<Guid> Delete(Guid gradeLevelId)
+    {
+        return await _gradeLevelStore.Delete(gradeLevelId);
     }
     
 }

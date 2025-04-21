@@ -31,10 +31,14 @@ public static class HelperService
     {
         return GetSexText(ParseToSexFromDb(obj));
     }
-    public static string ConvertTimeFromUtc(DateTime  timeUtc)
+    public static string ConvertTimeFromUtc(DateTime? timeUtc, string outTimeFormat = "yyyy-MM-dd")
     {
-        TimeZoneInfo cstZone = TimeZoneInfo.FindSystemTimeZoneById("India Standard Time");
-        DateTime cstTime = TimeZoneInfo.ConvertTimeFromUtc(timeUtc, cstZone);
-        return cstTime.ToString("yyyy-MM-dd");
+        if (timeUtc != null)
+        {
+            var cstZone = TimeZoneInfo.FindSystemTimeZoneById("India Standard Time");
+            var cstTime = TimeZoneInfo.ConvertTimeFromUtc((DateTime)timeUtc, cstZone);
+            return cstTime.ToString(outTimeFormat);            
+        }
+        return string.Empty;
     }
 }

@@ -129,7 +129,7 @@ public static class TeacherEndpoints
         try
         {
             var result =  await servise.Delete(id);
-            return Results.Ok(new ApiResponse<Guid>(result, 1, "Grade book deleted"));
+            return Results.Ok(new ApiResponse<Guid>(result, 1, "Teachers deleted"));
         }
         catch (Exception e)
         {

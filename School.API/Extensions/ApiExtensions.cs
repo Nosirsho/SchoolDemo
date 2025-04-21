@@ -21,6 +21,7 @@ public static class ApiExtensions
         app.MapSysSettingEndpoints();
         app.MapSmsSenderEndpoints();
         app.MapTeacherEndpoints();
+        app.MapLessonEndpoint();
     }
 
     public static void AddApiAuthentication(
