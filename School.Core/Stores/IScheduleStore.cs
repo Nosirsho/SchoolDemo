@@ -12,4 +12,5 @@ public interface IScheduleStore
     public Task<IReadOnlyList<ScheduleDto>> GetGradeDayCollection(Guid gradeLevelId, DayOfWeek day);
     public Task DeActivateAllSchedule();
     public Task AddAllSchedules(List<Schedule> schedules);
+    Task<ICollection<Schedule>> GetScheduleByDayForGradeLevel(Guid gradeLevelId, DayOfWeek day);
 }

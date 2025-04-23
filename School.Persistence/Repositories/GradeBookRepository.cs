@@ -88,9 +88,9 @@ public class GradeBookRepository : IGradeBookStore
         return result;
     }
 
-    public async Task<ICollection<GradeBook>> GetByLessonInterval(DateTime startDate, DateTime endDate, Guid lessonId)
+    public async Task<ICollection<GradeBook>> GetByLessonInterval(DateTime startDate, DateTime endDate, Guid lessonId, Guid? gradeLevelId)
     {
-        var studentsWithGrades = await _context.Students
+        var studentsWithGrades = await _context.Students.Where(s=> gradeLevelId == null || s.GradeLevelId == gradeLevelId)
             .GroupJoin(
                 _context.GradeBooks.Where(gb => gb.Date >= startDate.ToUniversalTime() && gb.Date <= endDate.ToUniversalTime() && gb.Lesson.Id == lessonId),
                 student => student.Id,
@@ -138,5 +138,22 @@ public class GradeBookRepository : IGradeBookStore
         //gradeBookEntity.Date = DateTime.UtcNow;
         await _context.SaveChangesAsync();
         return id;
+    }
+
+    public async Task<IEnumerable<GradeBook>> GetStudentLessonsGrade(Guid? studentId, DateTime date)
+    {
+        var targetDateUtc = date.Date.ToUniversalTime();
+        var query = _context.GradeBooks.Where(gb => !gb.IsDeleted && gb.Date.Date.ToUniversalTime().Date == targetDateUtc.Date);
+
+        if (studentId.HasValue)
+        {
+            query = query.Where(gb => gb.StudentId == studentId.Value);
+        }
+
+        var grades = await query
+            .Include(s => s.Student)
+            .Include(s => s.Lesson)
+            .ToListAsync();
+        return _mapper.Map<IEnumerable<GradeBook>>(grades);
     }
 }

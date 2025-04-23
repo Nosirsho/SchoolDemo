@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using School.API.Contracts.GradeBook;
 using School.Application.Services;
 using School.Core.Model;
+using School.Core.Model.GradeBookDto;
 
 namespace School.API.Endpoints;
 
@@ -13,7 +14,9 @@ public static class GradeBookEndpoints
         var endpoints = app.MapGroup("gradebook");
         endpoints.MapGet(string.Empty, GetGradeBooks);
         endpoints.MapGet("/{start:datetime}/{end:datetime}", GetIntervalGradeBooks);
-        endpoints.MapGet("/{lessonId:guid}/{start:datetime}/{end:datetime}", GetByLessonIntervalGradeBooks);
+        endpoints.MapGet("/{lessonId:guid}/{gradeLevelId:guid}/{start:datetime}/{end:datetime}", GetByLessonIntervalGradeBooks);
+        endpoints.MapGet("/{studentId:guid}/{date:datetime}", GetStudentLessonsGrade);
+        endpoints.MapGet("/{date:datetime}", GetStudentsLessonsGrade);
         endpoints.MapPost(string.Empty, CreateGradeBook);
         endpoints.MapDelete(string.Empty, DeleteCurrentDayGradeBook);
         
@@ -29,19 +32,20 @@ public static class GradeBookEndpoints
     private static async Task<IResult> GetIntervalGradeBooks(HttpContext context,
         [FromRoute] DateTime start,
         [FromRoute] DateTime end,
-        GradeBookService servise)
+        GradeBookService service)
     {
-        var result = await servise.GetIntervalStudentGrades(start, end);
+        var result = await service.GetIntervalStudentGrades(start, end);
         
         return Results.Ok(new ApiResponse<IEnumerable<StudentGradeBook>>(result));
     }
     private static async Task<IResult> GetByLessonIntervalGradeBooks(HttpContext context,
         [FromRoute] Guid lessonId,
+        [FromRoute] Guid gradeLevelId,
         [FromRoute] DateTime start,
         [FromRoute] DateTime end,
-        GradeBookService servise)
+        GradeBookService service)
     {
-        var result = await servise.GetByLessonIntervalStudentGrades(start, end, lessonId);
+        var result = await service.GetByLessonIntervalStudentGrades(start, end, lessonId, gradeLevelId);
         
         return Results.Ok(new ApiResponse<IEnumerable<StudentGradeBook>>(result));
     }
@@ -78,14 +82,24 @@ public static class GradeBookEndpoints
         }
     }
 
+    private static async Task<IResult> GetStudentLessonsGrade(
+        [FromRoute] Guid studentId,
+        [FromRoute] DateTime date,
+        GradeBookService service
+        )
+    {
+        var result = await service.GetStudentLessonsGrade(studentId, date);
+        return Results.Ok(new ApiResponse<IEnumerable<StudentLessonGradeDto>>(result));
+    }
+
     private static async Task<IResult> DeleteCurrentDayGradeBook(
         [FromBody] DeleteGradeBookRequest request,
-        GradeBookService servise
+        GradeBookService service
         )
     {
         try
         {
-            var result =  await servise.Delete(request.StudentId, request.LessonId, request.Date);
+            var result =  await service.Delete(request.StudentId, request.LessonId, request.Date);
             return Results.Ok(new ApiResponse<Guid>(result, 1, "Grade book deleted"));
         }
         catch (Exception e)
@@ -93,4 +107,13 @@ public static class GradeBookEndpoints
             return Results.Ok(new ApiResponse<object>(0, e.Message));
         }
     }
+    private static async Task<IResult> GetStudentsLessonsGrade(
+        [FromRoute] DateTime date,
+        GradeBookService service
+    )
+    {
+        var result = await service.GetStudentLessonsGrade(null, date);
+        return Results.Ok(new ApiResponse<IEnumerable<StudentLessonGradeDto>>(result));
+    }
+        
 }

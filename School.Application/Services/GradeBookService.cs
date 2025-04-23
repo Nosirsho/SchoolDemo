@@ -1,4 +1,5 @@
 using School.Core.Model;
+using School.Core.Model.GradeBookDto;
 using School.Core.Stores;
 
 namespace School.Application.Services;
@@ -51,10 +52,32 @@ public class GradeBookService
             .ToList();                                                                                                      
         return result;
     }
-    
-    public async Task<IEnumerable<StudentGradeBook>> GetByLessonIntervalStudentGrades(DateTime startDate, DateTime endDate, Guid lessonId)
+
+    public async  Task<IEnumerable<StudentLessonGradeDto>> GetStudentLessonsGrade(Guid? studentId, DateTime date)
     {
-        var grades = await _gradeBookStore.GetByLessonInterval(startDate, endDate, lessonId);
+        var gradeBooks = await _gradeBookStore.GetStudentLessonsGrade(studentId, date);
+        var result = gradeBooks
+            .GroupBy(gb => gb.Student.Id)
+            .Select(group => new StudentLessonGradeDto
+            {
+                StudentId = group.Key,
+                FullName = $"{group.First().Student.LastName} {group.First().Student.FirstName} {group.First().Student.MiddleName}", // Берем данные студента из первой записи группы
+                LessonGrade = group
+                    .Select(gb => new LessonGradeDto
+                    {
+                        LessonId = gb.Lesson.Id,
+                        LessonName = gb.Lesson.Name,
+                        Grade = gb.Grade
+                    })
+                    .ToList()
+            })
+            .ToList();
+        return result;
+    }
+
+    public async Task<IEnumerable<StudentGradeBook>> GetByLessonIntervalStudentGrades(DateTime startDate, DateTime endDate, Guid lessonId, Guid? gradeBookId)
+    {
+        var grades = await _gradeBookStore.GetByLessonInterval(startDate, endDate, lessonId, gradeBookId);
         var result = grades
             .GroupBy(s => s.Student.Id) 
             .Select(d => new StudentGradeBook

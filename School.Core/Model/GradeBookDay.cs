@@ -7,3 +7,4 @@ public class GradeBookDay
     public int Grade { get; set; }
     
 }
+

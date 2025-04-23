@@ -131,4 +131,13 @@ public class ScheduleRepository : IScheduleStore
             }
         }
     }
+
+    public async Task<ICollection<Schedule>> GetScheduleByDayForGradeLevel(Guid gradeLevelId, DayOfWeek day)
+    {
+        var result = await _schoolDbContext.Schedules
+            .Where(s => s.GradeLevelId == gradeLevelId && s.DayOfWeek == day && s.IsActive)
+            .Include(s=>s.Lesson)
+            .OrderBy(s=>s.Number).ToListAsync();
+        return _mapper.Map<ICollection<Schedule>>(result);
+    }
 }

@@ -14,12 +14,17 @@ public class ScheduleConfiguration : IEntityTypeConfiguration<ScheduleEntity>
         builder
             .HasOne(s => s.Teacher)
             .WithMany(t => t.Schedules)
-            .HasForeignKey(s => s.TeacherId);
+            .HasForeignKey(s => s.TeacherId)
+            .OnDelete(DeleteBehavior.Cascade);
         builder
-            .HasOne(s=>s.Lesson)
-            .WithOne(l=>l.Schedule);
+            .HasOne(s => s.Lesson)
+            .WithMany(l => l.Schedules)
+            .HasForeignKey(s => s.LessonId)
+            .OnDelete(DeleteBehavior.Cascade);
         builder
-            .HasOne(s=>s.GradeLevel)
-            .WithOne(g=>g.Schedule);
+            .HasOne(s => s.GradeLevel)
+            .WithOne(g => g.Schedule)
+            .HasForeignKey<ScheduleEntity>(s => s.GradeLevelId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

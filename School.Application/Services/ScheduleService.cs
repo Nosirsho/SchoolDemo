@@ -123,4 +123,10 @@ public class ScheduleService
     {
         await _scheduleStore.AddAllSchedules(schedules);
     }
+
+    public async Task<IEnumerable<Schedule>> GetScheduleByDayForGradeLevel(Guid gradeLevelId, DateTime day)
+    {
+        var dayOfWeek = (DayOfWeek)(int)day.DayOfWeek;
+        return await _scheduleStore.GetScheduleByDayForGradeLevel(gradeLevelId, dayOfWeek);
+    }
 }
