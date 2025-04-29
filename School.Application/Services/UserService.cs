@@ -11,15 +11,19 @@ public class UserService
     private readonly IJwtProvider _jwtProvider;
     private readonly IPasswordHasher _passwordHasher;
     private readonly IUserStore _userStore;
+    private readonly IPermissionStore _permissionStore;
 
     public UserService(
         IJwtProvider jwtProvider,
         IPasswordHasher passwordHasher, 
-        IUserStore userStore)
+        IUserStore userStore,
+        IPermissionStore permissionStore
+        )
     {
         _jwtProvider = jwtProvider;
         _passwordHasher = passwordHasher;
         _userStore = userStore;
+        _permissionStore = permissionStore;
     }
     public async Task Register(string userName, string email, string password)
     {
@@ -38,7 +42,9 @@ public class UserService
             throw new ApplicationException("Invalid password");
         }
 
-        var token = _jwtProvider.GenerateJWTToken(user);
+        var permissions = await _permissionStore.GetUserPermissions(user.Id);
+
+        var token = _jwtProvider.GenerateJWTToken(user, permissions);
         return token;
     }
 }

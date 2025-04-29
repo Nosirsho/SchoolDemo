@@ -1,5 +1,6 @@
 ﻿using School.API.Contracts.User;
 using School.Application.Services;
+using School.Core.Model;
 
 namespace School.API.Endpoints;
 
@@ -25,6 +26,6 @@ public static class UsersEndpoints
     {
         var token = await userService.Login(request.Email, request.Password);
         context.Response.Cookies.Append("test_token", token);
-        return Results.Ok(token);
+        return Results.Ok(new ApiResponse<string>(token));
     }
 }

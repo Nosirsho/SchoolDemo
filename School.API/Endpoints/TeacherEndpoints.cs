@@ -11,7 +11,7 @@ public static class TeacherEndpoints
 {
     public static IEndpointRouteBuilder MapTeacherEndpoints(this IEndpointRouteBuilder app)
     {
-        var endpoints = app.MapGroup("teachers");
+        var endpoints = app.MapGroup("teachers").RequireAuthorization();
         endpoints.MapGet(string.Empty, GetTeachers);
         endpoints.MapGet("{id:guid}", GetTeacherById);
         endpoints.MapPut("{id:guid}", UpdateTeacher);

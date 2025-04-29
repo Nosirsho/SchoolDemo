@@ -18,7 +18,7 @@ try
     builder.Logging.ClearProviders();
     builder.Host.UseNLog();
     
-    builder.WebHost.UseUrls("http://localhost:5296");
+    builder.WebHost.UseUrls("http://localhost:8010");
     
     var services = builder.Services;
     var configuration = builder.Configuration;
@@ -63,15 +63,16 @@ try
         app.UseSwaggerUI();
     }
     app.UseHttpsRedirection();
-    
+
+    app.UseAuthentication();
     app.UseAuthorization();
 
     app.MapControllers();
     app.AddMappedExtensions();
     app.MapGet("get", () => Results.Ok("Hello World!")).RequirePermissions(Permission.Read);
-    app.MapPost("post", () => Results.Ok("Hello World!")).RequirePermissions(Permission.Create);
-    app.MapPut("put", () => Results.Ok("Hello World!")).RequirePermissions(Permission.Update);
-    app.MapDelete("delete", () => Results.Ok("Hello World!")).RequirePermissions(Permission.Delete);
+    app.MapGet("post", () => Results.Ok("Hello World!")).RequirePermissions(Permission.Create);
+    app.MapGet("put", () => Results.Ok("Hello World!")).RequirePermissions(Permission.Update);
+    app.MapGet("delete", () => Results.Ok("Hello World!")).RequirePermissions(Permission.Delete);
     app.Run();
 }
 catch (Exception e)
