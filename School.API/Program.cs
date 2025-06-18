@@ -69,10 +69,10 @@ try
 
     app.MapControllers();
     app.AddMappedExtensions();
-    app.MapGet("get", () => Results.Ok("Hello World!")).RequirePermissions(Permission.Read);
-    app.MapGet("post", () => Results.Ok("Hello World!")).RequirePermissions(Permission.Create);
-    app.MapGet("put", () => Results.Ok("Hello World!")).RequirePermissions(Permission.Update);
-    app.MapGet("delete", () => Results.Ok("Hello World!")).RequirePermissions(Permission.Delete);
+    app.MapGet("get", () => Results.Ok("Hello World!")).RequirePermissions("Read");
+    app.MapGet("post", () => Results.Ok("Hello World!")).RequirePermissions("Create");
+    app.MapGet("put", () => Results.Ok("Hello World!")).RequirePermissions("Update");
+    app.MapGet("delete", () => Results.Ok("Hello World!")).RequirePermissions("Delete");
     app.Run();
 }
 catch (Exception e)

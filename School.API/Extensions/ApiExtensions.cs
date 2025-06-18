@@ -66,7 +66,7 @@ public static class ApiExtensions
     }
     
     public static IEndpointConventionBuilder RequirePermissions<TBuilder>(
-        this TBuilder builder, params Permission[] permissions)
+        this TBuilder builder, params string[] permissions)
         where TBuilder : IEndpointConventionBuilder
     {
         return builder

@@ -13,7 +13,7 @@ public class JwtProvider(IOptions<JwtOptions> options): IJwtProvider
 {
     private readonly JwtOptions _options = options.Value;
 
-    public string GenerateJWTToken(User user, HashSet<Permission> permissions)
+    public string GenerateJWTToken(User user, HashSet<string> permissions)
     {
         // получить роль по юзеру
         // получить все пермисси по ролям

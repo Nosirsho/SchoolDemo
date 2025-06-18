@@ -6,5 +6,5 @@ namespace School.Application.Interfaces.Auth;
 
 public interface IJwtProvider
 {
-    string GenerateJWTToken(User user, HashSet<Permission> permissions);
+    string GenerateJWTToken(User user, HashSet<string> permissions);
 }

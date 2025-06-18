@@ -12,7 +12,7 @@ public class PermissionService
         _permissionStore = permissionStore;
     }
 
-    public Task<HashSet<Permission>> GetAllPermissionsAsync(Guid userId)
+    public Task<HashSet<string>> GetAllPermissionsAsync(Guid userId)
     {
         return _permissionStore.GetUserPermissions(userId);
     }

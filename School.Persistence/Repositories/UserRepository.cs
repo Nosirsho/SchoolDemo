@@ -45,7 +45,7 @@ public class UserRepository : IUserStore, IPermissionStore
         return user;
     }
 
-    public async Task<HashSet<Permission>> GetUserPermissions(Guid userId)
+    public async Task<HashSet<string>> GetUserPermissions(Guid userId)
     {
         var roles = await _schoolDbContext.Users
             .AsNoTracking()
@@ -57,7 +57,7 @@ public class UserRepository : IUserStore, IPermissionStore
         return roles
             .SelectMany(r => r)
             .SelectMany(r =>r.Permissions)
-            .Select(p => (Permission)p.Id)
+            .Select(p => p.Name)
             .ToHashSet();
     }
 }

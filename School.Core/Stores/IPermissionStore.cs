@@ -4,5 +4,5 @@ namespace School.Core.Stores;
 
 public interface IPermissionStore
 {
-    Task<HashSet<Permission>> GetUserPermissions(Guid userId);
+    Task<HashSet<string>> GetUserPermissions(Guid userId);
 }
